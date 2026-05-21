@@ -6,8 +6,8 @@ const start = async() => {
   
   await connectDB();
   
-  app.listen(4200, ()=>{
-    console.log('Your Server is up and running on port, 4200');
+  app.listen(5000, ()=>{
+    console.log('Your Server is up and running on port, 5000');
   })
 }
 
