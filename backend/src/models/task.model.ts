@@ -1,14 +1,15 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
+
 export interface ITask  extends Document {
     _id: Types.ObjectId;
     title: string;
-    description: string;
+    description?: string;
     status: 'todo' | 'working_on_it' | 'done';
     board: Types.ObjectId;
     assignedTo: Types.ObjectId;
     assignedBy: Types.ObjectId;
-    dueDate: Date;
+    dueDate?: Date;
     createdAt: Date;
     updatedAt: Date;
 }

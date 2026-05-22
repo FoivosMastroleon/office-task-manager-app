@@ -34,7 +34,7 @@ export interface UserResponseDTO {
     googleId?: string;
     department: string;
     position: string;
-    role: string | RoleDTO;
+    role: RoleDTO;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
