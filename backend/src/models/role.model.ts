@@ -8,9 +8,11 @@ export interface IRole extends Document {
 }
 
 const RoleSchema: Schema = new Schema<IRole>({
-    role: { type: String, required: true, unique: true },
-    //'admin', 'manager', 'employee'
-    
+    role: { 
+        type: String,
+        enum: ['admin', 'manager', 'employee'],
+        required: true,
+        unique: true },
     description: String,
     active: { type: Boolean, default: true }
 }, { 
@@ -18,4 +20,4 @@ const RoleSchema: Schema = new Schema<IRole>({
     collection: 'roles'
  });
 
- export default model<IRole>("Role", RoleSchema);
+ export default model<IRole>("Role", RoleSchema); 
