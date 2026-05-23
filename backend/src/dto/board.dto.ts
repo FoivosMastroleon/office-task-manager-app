@@ -22,7 +22,9 @@ export interface BoardResponseDTO {
     description?: string;
     owner: UserResponseDTO; 
     members: UserResponseDTO[];
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
+    
 
 }

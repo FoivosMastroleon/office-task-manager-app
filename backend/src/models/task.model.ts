@@ -7,6 +7,7 @@ export interface ITask  extends Document {
     description?: string;
     status: 'todo' | 'working_on_it' | 'done';
     board: Types.ObjectId;
+    isActive: boolean;
     assignedTo: Types.ObjectId;
     assignedBy: Types.ObjectId;
     dueDate?: Date;
@@ -24,6 +25,7 @@ const TaskSchema: Schema = new Schema<ITask>({
         required: true
     
     },
+    isActive: { type: Boolean, default: true },
     board: { type: Schema.Types.ObjectId, ref: 'Board', required: true },
     assignedTo: { type: Schema.Types.ObjectId, 
         ref: 'User', 
