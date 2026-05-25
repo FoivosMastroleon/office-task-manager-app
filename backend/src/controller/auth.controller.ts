@@ -20,8 +20,8 @@ export const login = async(req:Request, res:Response, next: NextFunction) => {
             const { token } = req.body;
             
             const result = await authService.googleLogin(token);
-            if (!result.status) {
-                return res.status(401).json({ status: false, message: result.message });
+            if (!result) {
+                return res.status(401).json({ status: false, message: result});
             }
             res.status(200).json({ status: true, token: result.token });
         } catch (err) {
