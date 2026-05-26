@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import * as boardService from '../services/board.service';
-import { CreateBoardDTO, UpdateBoardDTO } from '../dto/board.dto';
+import { CreateBoardDTO } from '../dto/board.dto';
 
 export const getBoards = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const boards = await boardService.findAll();
-        res.json(boards);
+        res.status(200).json(boards);
     } catch (error) {
         next(error);
     }
@@ -26,8 +26,9 @@ export const getBoardById = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const getBoardsIncludingInactive = async (req: Request, res: Response, next: NextFunction) => {
-    try {        const boards = await boardService.findAllIncludingInactive();
-        res.json(boards);
+    try {
+        const boards = await boardService.findAllIncludingInactive();
+        res.status(200).json(boards);
     } catch (error) {
         next(error);
     }
@@ -47,7 +48,7 @@ export const updateBoard = async (req: Request, res: Response, next: NextFunctio
     try {
         const id = req.params.id;
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Board id' });
-        const payload: UpdateBoardDTO = req.body;
+        const payload: CreateBoardDTO = req.body;
         const updatedBoard = await boardService.updateBoard(id, payload);
         res.status(200).json(updatedBoard);
     } catch (error) {
