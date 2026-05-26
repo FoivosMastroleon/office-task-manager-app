@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import boardRoutes from './routes/board.routes';
@@ -17,6 +18,7 @@ app.use(cors({
 
 setupSwagger(app);
 
+app.use(morgan('dev'));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
