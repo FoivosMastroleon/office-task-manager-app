@@ -1,5 +1,5 @@
 import User from '../models/user.model';
-import Role from '../models/role.model';
+import Role, { IRole } from '../models/role.model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -31,7 +31,7 @@ export const login = async (username: string, password: string) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return null;
 
-    const payload = { userId: user._id, email: user.email, role: (user.role as any).role };
+    const payload = { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
     return { user, token };
@@ -55,23 +55,23 @@ export const googleLogin = async (idToken: string) => {
 
             const randomPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), SALT_ROUNDS);
 
-            user = await userDAO.createUser({
+            const newUser = await userDAO.createUser({
                 username: googleUser.email,
                 email: googleUser.email,
                 firstname: googleUser.name,
                 password: randomPassword,
-                role: employeeRole._id.toString(),
+                role: employeeRole._id,
                 department: '',
                 position: ''
             });
 
-            user = await User.findById(user._id).populate('role').lean().exec();
+            user = await User.findById(newUser._id).populate('role').lean().exec();
         }
 
         if (!user) return { status: false, message: 'Could not create user' };
 
         const token = jwt.sign(
-            { userId: user._id, email: user.email, role: (user.role as any).role },
+            { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
         );
