@@ -15,8 +15,6 @@ declare global {
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-    console.log('Getting authenticated');
-
     const header = req.headers.authorization;
 
     if (!header || !header.startsWith('Bearer ')) {
