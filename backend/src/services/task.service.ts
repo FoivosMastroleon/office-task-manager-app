@@ -1,10 +1,18 @@
 import * as taskDAO from '../dao/task.dao';
+import * as boardDAO from '../dao/board.dao';
 import { ITask } from '../models/task.model';
+import User from '../models/user.model';
+import { IRole } from '../models/role.model';
 import { Types } from 'mongoose';
 import { CreateTaskDTO, UpdateTaskDTO, TaskStatus } from '../dto/task.dto';     
 
-export const findAll = async () => {
-    return await taskDAO.findAll();
+export const findAll = async (userId: string, role: string) => {
+    if (role === 'admin' || role === 'manager') {
+        return await taskDAO.findAll();
+    }
+    const boards = await boardDAO.findByMember(userId);
+    const boardIds = boards.map((b: any) => b._id);
+    return await taskDAO.findByBoardIds(boardIds);
 }
 
 export const findAllIncludingInactive = async () => {
@@ -19,6 +27,13 @@ export const createTask = async (payload: CreateTaskDTO) => {
     const boardId = new Types.ObjectId(payload.board);
     const assignedToId = new Types.ObjectId(payload.assignedTo);
     const assignedById = new Types.ObjectId(payload.assignedBy);
+
+    const assigner = await User.findById(assignedById).populate('role', 'role').lean().exec();
+    if (!assigner) throw new Error('Assigning user not found');
+    const assignerRole = ((assigner.role as unknown) as IRole).role;
+    if (assignerRole !== 'admin' && assignerRole !== 'manager') {
+        throw new Error('Only managers or admins can assign tasks');
+    }
 
     return await taskDAO.createTask({
         ...payload,

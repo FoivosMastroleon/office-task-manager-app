@@ -1,4 +1,5 @@
 import Task, { ITask } from '../models/task.model';
+import { Types } from 'mongoose';
 
 export const findAll = async (): Promise<ITask[]> => {
     return await Task.find({ isActive: true }).populate('board').populate('assignedTo').populate('assignedBy').lean().exec();
@@ -43,4 +44,13 @@ export const findByAssignee = async (userId: string): Promise<ITask[]> => {
 
 export const updateTaskStatus = async (id: string, status: string): Promise<ITask | null> => {
     return await Task.findByIdAndUpdate(id, { status }, { new: true }).populate('board').populate('assignedTo').populate('assignedBy').lean().exec();
+};
+
+export const softDeleteByBoard = async (boardId: string): Promise<void> => {
+    await Task.updateMany({ board: boardId, isActive: true }, { isActive: false });
+};
+
+export const findByBoardIds = async (boardIds: Types.ObjectId[]): Promise<ITask[]> => {
+    return await Task.find({ board: { $in: boardIds }, isActive: true })
+        .populate('board').populate('assignedTo').populate('assignedBy').lean().exec();
 };

@@ -18,10 +18,10 @@ export const findById = async (id: string): Promise<IBoard | null> => {
 
 }
 
-export const createBoard = async (data: Partial<IBoard>): Promise<IBoard> => {
+export const createBoard = async (data: Partial<IBoard>): Promise<IBoard | null> => {
     const board = new Board(data);
-    return await board.save();
-
+    const saved = await board.save();
+    return await Board.findById(saved._id).populate('owner').populate('members').lean().exec();
 }
 
 export const updateBoard = async (id: string, payload: Partial<IBoard>): Promise<IBoard | null> => {
@@ -48,5 +48,11 @@ export const addMemberToBoard = async (boardId: string, memberId: string): Promi
 export const removeMemberFromBoard = async (boardId: string, memberId: string): Promise<IBoard | null> => {
     return await Board.findByIdAndUpdate(boardId, { $pull: { members: memberId } }, { new: true })
     .populate('owner').populate('members').lean().exec();
+};
 
+export const findByMember = async (userId: string): Promise<IBoard[]> => {
+    return await Board.find({
+        isActive: true,
+        $or: [{ owner: userId }, { members: userId }]
+    }).populate('owner').populate('members').lean().exec();
 };

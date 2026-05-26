@@ -1,11 +1,15 @@
 import * as boardDAO from '../dao/board.dao';
+import * as taskDAO from '../dao/task.dao';
 import { IBoard } from '../models/board.model';
 import { Types } from 'mongoose';
 import { CreateBoardDTO, UpdateBoardDTO } from '../dto/board.dto';
 
 
-export const  findAll = async () => {
-    return await boardDAO.findAll();
+export const findAll = async (userId: string, role: string) => {
+    if (role === 'admin' || role === 'manager') {
+        return await boardDAO.findAll();
+    }
+    return await boardDAO.findByMember(userId);
 }
 
 export const findAllIncludingInactive = async () => {
@@ -36,7 +40,9 @@ export const updateBoard = async (id: string, payload: UpdateBoardDTO) => {
 };
 
 export const softDeleteBoard = async (id: string) => {
-    return await boardDAO.softDeleteBoard(id);}
+    await taskDAO.softDeleteByBoard(id);
+    return await boardDAO.softDeleteBoard(id);
+}
 
 export const restoreBoard = async (id: string) => {
     return await boardDAO.restoreBoard(id);

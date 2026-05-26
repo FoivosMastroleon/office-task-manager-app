@@ -4,7 +4,8 @@ import { CreateBoardDTO } from '../dto/board.dto';
 
 export const getBoards = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const boards = await boardService.findAll();
+        const { userId, role } = req.user;
+        const boards = await boardService.findAll(userId, role);
         res.status(200).json(boards);
     } catch (error) {
         next(error);
@@ -25,7 +26,7 @@ export const getBoardById = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-export const getBoardsIncludingInactive = async (req: Request, res: Response, next: NextFunction) => {
+export const getBoardsIncludingInactive = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const boards = await boardService.findAllIncludingInactive();
         res.status(200).json(boards);

@@ -4,7 +4,8 @@ import { CreateTaskDTO, UpdateTaskDTO } from '../dto/task.dto';
 
 export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const tasks = await taskService.findAll();
+        const { userId, role } = req.user;
+        const tasks = await taskService.findAll(userId, role);
         res.status(200).json(tasks);
     } catch (error) {
         next(error);

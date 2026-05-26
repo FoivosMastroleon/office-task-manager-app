@@ -18,15 +18,15 @@ export const register = async (payload: CreateUserDTO) => {
 
     let employeeRole = await Role.findOne({ role: 'employee' });
     if (!employeeRole) {
-        employeeRole = await Role.create({ role: 'employee', description: 'Default role', active: true });
+        employeeRole = await Role.create({ role: 'employee', description: 'Default role' });
     }
 
     const created = await userDAO.createUser({ ...payload, role: employeeRole._id });
-    return await User.findById(created._id).populate('role').select('-password').lean().exec();
+    return await User.findById(created._id).populate('role', 'role description').select('-password').lean().exec();
 };
 
 export const login = async (username: string, password: string) => {
-    const user = await User.findOne({ username }).populate('role').lean().exec();
+    const user = await User.findOne({ username }).populate('role', 'role description').lean().exec();
     if (!user || !user.password) return null;
 
     const match = await bcrypt.compare(password, user.password);
@@ -46,12 +46,12 @@ export const googleLogin = async (idToken: string) => {
 
         if (!googleUser.email_verified) return { status: false, message: 'Email not verified' };
 
-        let user = await User.findOne({ email: googleUser.email }).populate('role').lean().exec();
+        let user = await User.findOne({ email: googleUser.email }).populate('role', 'role description').lean().exec();
 
         if (!user) {
             let employeeRole = await Role.findOne({ role: 'employee' });
             if (!employeeRole) {
-                employeeRole = await Role.create({ role: 'employee', description: 'Default role', active: true });
+                employeeRole = await Role.create({ role: 'employee', description: 'Default role' });
             }
 
             const randomPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), SALT_ROUNDS);
@@ -66,7 +66,7 @@ export const googleLogin = async (idToken: string) => {
                 position: ''
             });
 
-            user = await User.findById(newUser._id).populate('role').lean().exec();
+            user = await User.findById(newUser._id).populate('role', 'role description').lean().exec();
         }
 
         if (!user) return { status: false, message: 'Could not create user' };
