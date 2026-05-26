@@ -11,6 +11,15 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+export const getTasksIncludingInactive = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const tasks = await taskService.findAllIncludingInactive();
+        res.status(200).json(tasks);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getTaskById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
