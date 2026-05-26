@@ -21,7 +21,8 @@ export const register = async (payload: CreateUserDTO) => {
         employeeRole = await Role.create({ role: 'employee', description: 'Default role', active: true });
     }
 
-    return await userDAO.createUser({ ...payload, role: employeeRole._id });
+    const created = await userDAO.createUser({ ...payload, role: employeeRole._id });
+    return await User.findById(created._id).populate('role').select('-password').lean().exec();
 };
 
 export const login = async (username: string, password: string) => {
