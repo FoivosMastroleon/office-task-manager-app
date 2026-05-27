@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import * as boardService from '../services/board.service';
 import { CreateBoardDTO } from '../dto/board.dto';
+import { mapBoardToResponse } from '../mappers/board.mapper';
 
 export const getBoards = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { userId, role } = req.user;
         const boards = await boardService.findAll(userId, role);
-        res.status(200).json(boards);
+        res.status(200).json(boards.map(mapBoardToResponse));
     } catch (error) {
         next(error);
     }
@@ -20,7 +21,7 @@ export const getBoardById = async (req: Request, res: Response, next: NextFuncti
         if (!board) {
             return res.status(404).json({ message: 'Board not found' });
         }
-        res.status(200).json(board);
+        res.status(200).json(mapBoardToResponse(board));
     } catch (error) {
         next(error);
     }
@@ -29,7 +30,7 @@ export const getBoardById = async (req: Request, res: Response, next: NextFuncti
 export const getBoardsIncludingInactive = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const boards = await boardService.findAllIncludingInactive();
-        res.status(200).json(boards);
+        res.status(200).json(boards.map(mapBoardToResponse));
     } catch (error) {
         next(error);
     }
@@ -39,7 +40,7 @@ export const createBoard = async (req: Request, res: Response, next: NextFunctio
     try {
         const payload: CreateBoardDTO = req.body;
         const board = await boardService.createBoard(payload, req.user.userId);
-        res.status(201).json(board);
+        res.status(201).json(mapBoardToResponse(board));
     } catch (error) {
         next(error);
     }
@@ -51,7 +52,7 @@ export const updateBoard = async (req: Request, res: Response, next: NextFunctio
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Board id' });
         const payload: CreateBoardDTO = req.body;
         const updatedBoard = await boardService.updateBoard(id, payload);
-        res.status(200).json(updatedBoard);
+        res.status(200).json(mapBoardToResponse(updatedBoard));
     } catch (error) {
         next(error);
     }
@@ -74,7 +75,7 @@ export const restoreBoard = async (req: Request, res: Response, next: NextFuncti
         const id = req.params.id;
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Board id' });
         const restoredBoard = await boardService.restoreBoard(id);
-        res.status(200).json(restoredBoard);
+        res.status(200).json(mapBoardToResponse(restoredBoard));
     } catch (error) {
         next(error);
     }
@@ -88,7 +89,7 @@ export const addMemberToBoard = async (req: Request, res: Response, next: NextFu
             return res.status(400).json({ message: 'Invalid Board id or Member id' });
         }
         const updatedBoard = await boardService.addMemberToBoard(boardId, memberId);
-        res.status(200).json(updatedBoard);
+        res.status(200).json(mapBoardToResponse(updatedBoard));
     } catch (error) {
         next(error);
     }
@@ -102,7 +103,7 @@ export const removeMemberFromBoard = async (req: Request, res: Response, next: N
             return res.status(400).json({ message: 'Invalid Board id or Member id' });
         }
         const updatedBoard = await boardService.removeMemberFromBoard(boardId, memberId);
-        res.status(200).json(updatedBoard);
+        res.status(200).json(mapBoardToResponse(updatedBoard));
     } catch (error) {
         next(error);
     }

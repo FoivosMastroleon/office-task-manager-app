@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import * as userService from '../services/user.service';
 import { CreateUserDTO, UpdateUserDTO } from '../dto/user.dto';
+import { mapUserToResponse } from '../mappers/user.mapper';
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await userService.findUsers();
-        res.status(200).json(users);
+        res.status(200).json(users.map(mapUserToResponse));
     } catch (err) {
         next(err);
     }
@@ -19,7 +20,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(user);
+        res.status(200).json(mapUserToResponse(user));
     } catch (err) {
         next(err);
     }
@@ -33,7 +34,7 @@ export const getUserByEmail = async (req: Request, res: Response, next: NextFunc
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(user);
+        res.status(200).json(mapUserToResponse(user));
     } catch (err) {
         next(err);
     }
@@ -47,7 +48,7 @@ export const getUserByUsername = async (req: Request, res: Response, next: NextF
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(user);
+        res.status(200).json(mapUserToResponse(user));
     } catch (err) {
         next(err);
     }
@@ -57,7 +58,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
     try {
         const payload: CreateUserDTO = req.body;
         const user = await userService.createUser(payload);
-        res.status(201).json(user);
+        res.status(201).json(mapUserToResponse(user));
     } catch (err) {
         next(err);
     }
@@ -72,7 +73,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(user);
+        res.status(200).json(mapUserToResponse(user));
     } catch (err) {
         next(err);
     }
@@ -84,7 +85,7 @@ export const softDelete = async (req: Request, res: Response, next: NextFunction
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid id' });
         const result = await userService.softDeleteUser(id);
         if (!result) return res.status(404).json({ message: 'User not found' });
-        res.status(200).json(result);
+        res.status(200).json(mapUserToResponse(result));
     } catch (err) {
         next(err);
     }

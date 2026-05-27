@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import * as taskService from '../services/task.service';
 import { CreateTaskDTO, UpdateTaskDTO } from '../dto/task.dto';
+import { mapTaskToResponse } from '../mappers/task.mapper';
 
 export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { userId, role } = req.user;
         const tasks = await taskService.findAll(userId, role);
-        res.status(200).json(tasks);
+        res.status(200).json(tasks.map(mapTaskToResponse));
     } catch (error) {
         next(error);
     }
@@ -15,7 +16,7 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
 export const getTasksIncludingInactive = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const tasks = await taskService.findAllIncludingInactive();
-        res.status(200).json(tasks);
+        res.status(200).json(tasks.map(mapTaskToResponse));
     } catch (error) {
         next(error);
     }
@@ -29,7 +30,7 @@ export const getTaskById = async (req: Request, res: Response, next: NextFunctio
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        res.status(200).json(task);
+        res.status(200).json(mapTaskToResponse(task));
     } catch (error) {
         next(error);
     }
@@ -39,7 +40,7 @@ export const createTask = async (req: Request, res: Response, next: NextFunction
     try {
         const payload: CreateTaskDTO = req.body;
         const task = await taskService.createTask(payload);
-        res.status(201).json(task);
+        res.status(201).json(mapTaskToResponse(task));
     } catch (error) {
         next(error);
     }
@@ -51,7 +52,7 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Task id' });
         const payload: UpdateTaskDTO = req.body;
         const updatedTask = await taskService.updateTask(id, payload);
-        res.status(200).json(updatedTask);
+        res.status(200).json(mapTaskToResponse(updatedTask));
     } catch (error) {
         next(error);
     }
@@ -73,7 +74,7 @@ export const restoreTask = async (req: Request, res: Response, next: NextFunctio
         const id = req.params.id;
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Task id' });
         const restoredTask = await taskService.restoreTask(id);
-        res.status(200).json(restoredTask);
+        res.status(200).json(mapTaskToResponse(restoredTask));
     } catch (error) {
         next(error);
     }
@@ -84,7 +85,7 @@ export const getTasksByBoard = async (req: Request, res: Response, next: NextFun
         const boardId = req.params.boardId;
         if (typeof boardId !== 'string') return res.status(400).json({ message: 'Invalid Board id' });
         const tasks = await taskService.findByBoard(boardId);
-        res.status(200).json(tasks);
+        res.status(200).json(tasks.map(mapTaskToResponse));
     } catch (error) {
         next(error);
     }
@@ -96,7 +97,7 @@ export const getTasksByAssignee = async (req: Request, res: Response, next: Next
         const userId = req.params.userId;
         if (typeof userId !== 'string') return res.status(400).json({ message: 'Invalid User id' });
         const tasks = await taskService.findByAssignee(userId);
-        res.status(200).json(tasks);
+        res.status(200).json(tasks.map(mapTaskToResponse));
     } catch (error) {
         next(error);
     }};
@@ -107,7 +108,7 @@ export const updateTaskStatus = async (req: Request, res: Response, next: NextFu
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Task id' });
         const status = req.body.status;
         const updatedTask = await taskService.updateTaskStatus(id, status);
-        res.status(200).json(updatedTask);
+        res.status(200).json(mapTaskToResponse(updatedTask));
     } catch (error) {
         next(error);
     }
