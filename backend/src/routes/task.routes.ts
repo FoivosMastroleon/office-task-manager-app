@@ -197,7 +197,7 @@ router.patch('/:id/status', authenticate, validate(updateTaskStatusSchema), task
  *      200:
  *        description: Task restored successfully
  */
-router.patch('/:id/restore', authenticate, hasAdminRole, taskController.restoreTask);
+router.patch('/:id/restore', authenticate, hasAdminOrManagerRole, taskController.restoreTask);
 
 /**
  * @openapi
@@ -219,6 +219,6 @@ router.patch('/:id/restore', authenticate, hasAdminRole, taskController.restoreT
  *      404:
  *        description: Task not found
  */
-router.delete('/:id', authenticate, hasAdminRole, taskController.deleteTask);
+router.delete('/:id', authenticate, hasAdminOrManagerRole, taskController.deleteTask);
 
 export default router;

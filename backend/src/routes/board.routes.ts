@@ -129,7 +129,7 @@ router.put('/:id', authenticate, hasAdminOrManagerRole, validate(createBoardSche
  *      404:
  *        description: Board not found
  */
-router.delete('/:id', authenticate, hasAdminRole, boardController.deleteBoard);
+router.delete('/:id', authenticate, hasAdminOrManagerRole, boardController.deleteBoard);
 
 /**
  * @openapi
@@ -149,7 +149,7 @@ router.delete('/:id', authenticate, hasAdminRole, boardController.deleteBoard);
  *      200:
  *        description: Board restored successfully
  */
-router.patch('/:id/restore', authenticate, hasAdminRole, boardController.restoreBoard);
+router.patch('/:id/restore', authenticate, hasAdminOrManagerRole, boardController.restoreBoard);
 
 /**
  * @openapi
