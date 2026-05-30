@@ -1,42 +1,12 @@
 import User from '../models/user.model';
 import Role, { IRole } from '../models/role.model';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
 import { verifyGoogleIdToken } from '../utils/googleVerify';
-import { CreateUserDTO } from '../dto/user.dto';
 import * as userDAO from '../dao/user.dao';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 const JWT_EXPIRES_IN = '1h';
-const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10');
-
-export const register = async (payload: CreateUserDTO) => {
-    if (payload.password) {
-        payload.password = await bcrypt.hash(payload.password, SALT_ROUNDS);
-    }
-
-    let employeeRole = await Role.findOne({ role: 'employee' });
-    if (!employeeRole) {
-        employeeRole = await Role.create({ role: 'employee', description: 'Default role' });
-    }
-
-    const created = await userDAO.createUser({ ...payload, role: employeeRole._id });
-    return await User.findById(created._id).populate('role', 'role description').select('-password').lean().exec();
-};
-
-export const login = async (username: string, password: string) => {
-    const user = await User.findOne({ username }).populate('role', 'role description').lean().exec();
-    if (!user || !user.password) return null;
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return null;
-
-    const payload = { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-
-    return { user, token };
-};
+const ALLOWED_DOMAIN = process.env.ALLOWED_DOMAIN || '';
 
 export const googleLogin = async (idToken: string) => {
     try {
@@ -46,6 +16,10 @@ export const googleLogin = async (idToken: string) => {
 
         if (!googleUser.email_verified) return { status: false, message: 'Email not verified' };
 
+        if (ALLOWED_DOMAIN && !googleUser.email.endsWith(`@${ALLOWED_DOMAIN}`)) {
+            return { status: false, message: 'Email domain not allowed' };
+        }
+
         let user = await User.findOne({ email: googleUser.email }).populate('role', 'role description').lean().exec();
 
         if (!user) {
@@ -54,16 +28,11 @@ export const googleLogin = async (idToken: string) => {
                 employeeRole = await Role.create({ role: 'employee', description: 'Default role' });
             }
 
-            const randomPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), SALT_ROUNDS);
-
             const newUser = await userDAO.createUser({
                 username: googleUser.email,
                 email: googleUser.email,
                 firstname: googleUser.name,
-                password: randomPassword,
                 role: employeeRole._id,
-                department: '',
-                position: ''
             });
 
             user = await User.findById(newUser._id).populate('role', 'role description').lean().exec();

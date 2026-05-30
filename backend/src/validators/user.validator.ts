@@ -15,16 +15,13 @@ export const positionSchema = z.enum(['HR Manager',
     'Intern']);
 
 export const createUserSchema = z.object({
-    username: z.string().min(3),
-    password: z.string().min(6),
+    username: z.string().min(3).optional(),
     firstname: z.string().optional(),
     lastname: z.string().optional(),
-    email: z.string().optional(),
+    email: z.string().email(),
     role: z.string(),
     department: departmentSchema.optional(),
     position: positionSchema.optional(),
-
-
 })
 
 export const updateUserSchema = createUserSchema.partial();

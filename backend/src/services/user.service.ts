@@ -1,10 +1,7 @@
 import * as userDAO from '../dao/user.dao';
 import { IUser } from '../models/user.model';
 import { Types } from 'mongoose';
-import bcrypt from 'bcrypt';
 import { CreateUserDTO, UpdateUserDTO } from '../dto/user.dto';
-
-const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10');
 
 export const findUsers = async () => {
     return await userDAO.findAll();
@@ -23,13 +20,10 @@ export const findUserByUsername = async (username: string) => {
 };
 
 export const createUser = async (payload: CreateUserDTO) => {
-    if (payload.password) {
-        payload.password = await bcrypt.hash(payload.password, SALT_ROUNDS);
-    }
-
     const roleId = new Types.ObjectId(payload.role);
+    const username = payload.username ?? payload.email;
 
-    return await userDAO.createUser({ ...payload, role: roleId });
+    return await userDAO.createUser({ ...payload, username, role: roleId });
 };
 
 export const updateUser = async (id: string, payload: UpdateUserDTO) => {
@@ -42,10 +36,6 @@ export const updateUser = async (id: string, payload: UpdateUserDTO) => {
     if (payload.department !== undefined) updateData.department = payload.department;
     if (payload.position !== undefined) updateData.position = payload.position;
     if (payload.isActive !== undefined) updateData.isActive = payload.isActive;
-
-    if (payload.password !== undefined) {
-        updateData.password = await bcrypt.hash(payload.password, SALT_ROUNDS);
-    }
 
     if (payload.role !== undefined) {
         updateData.role = new Types.ObjectId(payload.role);

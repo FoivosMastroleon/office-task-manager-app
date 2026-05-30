@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.72% </span>
+                <span class="strong">78.57% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/47</span>
+                <span class='fraction'>33/42</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.54% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/22</span>
+                <span class='fraction'>9/18</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.87% </span>
+                <span class="strong">89.28% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/33</span>
+                <span class='fraction'>25/28</span>
             </div>
         
             
@@ -112,23 +112,10 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -150,9 +137,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -166,10 +150,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -184,10 +164,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as userDAO from '../dao/user.dao';
 import { IUser } from '../models/user.model';
 import { Types } from 'mongoose';
-import bcrypt from 'bcrypt';
 import { CreateUserDTO, UpdateUserDTO } from '../dto/user.dto';
-&nbsp;
-const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10');
 &nbsp;
 export const findUsers = async () =&gt; {
     return await userDAO.findAll();
@@ -206,13 +183,10 @@ export const findUserByUsername = <span class="fstat-no" title="function not cov
 };
 &nbsp;
 export const createUser = async (payload: CreateUserDTO) =&gt; {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (payload.password) {
-        payload.password = await bcrypt.hash(payload.password, SALT_ROUNDS);
-    }
-&nbsp;
     const roleId = new Types.ObjectId(payload.role);
+    const username = payload.username ?? <span class="branch-1 cbranch-no" title="branch not covered" >payload.email;</span>
 &nbsp;
-    return await userDAO.createUser({ ...payload, role: roleId });
+    return await userDAO.createUser({ ...payload, username, role: roleId });
 };
 &nbsp;
 export const updateUser = async (id: string, payload: UpdateUserDTO) =&gt; {
@@ -225,10 +199,6 @@ export const updateUser = async (id: string, payload: UpdateUserDTO) =&gt; {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (payload.department !== undefined) <span class="cstat-no" title="statement not covered" >updateData.department = payload.department;</span>
     <span class="missing-if-branch" title="if path not taken" >I</span>if (payload.position !== undefined) <span class="cstat-no" title="statement not covered" >updateData.position = payload.position;</span>
     <span class="missing-if-branch" title="if path not taken" >I</span>if (payload.isActive !== undefined) <span class="cstat-no" title="statement not covered" >updateData.isActive = payload.isActive;</span>
-&nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (payload.password !== undefined) {
-<span class="cstat-no" title="statement not covered" >        updateData.password = await bcrypt.hash(payload.password, SALT_ROUNDS);</span>
-    }
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (payload.role !== undefined) {
 <span class="cstat-no" title="statement not covered" >        updateData.role = new Types.ObjectId(payload.role);</span>
@@ -247,7 +217,7 @@ export const softDeleteUser = async (id: string) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-27T12:13:21.301Z
+                at 2026-05-30T10:29:35.798Z
             </div>
         <script src="../prettify.js"></script>
         <script>
