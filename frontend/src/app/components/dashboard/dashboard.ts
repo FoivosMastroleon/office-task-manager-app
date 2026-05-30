@@ -8,10 +8,12 @@ import { UserService } from '../../shared/services/user.service';
 import { Task } from '../../shared/interfaces/task.interface';
 import { Board } from '../../shared/interfaces/board.interface';
 import { IUser } from '../../shared/interfaces/user.interface';
+import { Navbar } from '../navbar/navbar';
+
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, Navbar],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

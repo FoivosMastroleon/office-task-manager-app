@@ -1,10 +1,9 @@
+<app-navbar />
+
 <div class="dashboard">
   <header class="dashboard-header">
     <h1>Welcome, {{ user?.email }}</h1>
-    <div class="header-actions">
-      <span class="role-badge role-{{ role }}">{{ role }}</span>
-      <button (click)="logout()">Logout</button>
-    </div>
+    <span class="role-badge role-{{ role }}">{{ role }}</span>
   </header>
 
   <!-- ADMIN VIEW -->
