@@ -2,5 +2,6 @@
 
 
 export const environment = {
-  apiURL: 'render....com'
+  apiURL: 'render....com',
+  googleClientId: 'YOUR_GOOGLE_CLIENT_ID_HERE'
 };

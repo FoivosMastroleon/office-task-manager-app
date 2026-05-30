@@ -1,1 +1,78 @@
-<p>dashboard works!</p>
+<div class="dashboard">
+  <header class="dashboard-header">
+    <h1>Welcome, {{ user?.email }}</h1>
+    <div class="header-actions">
+      <span class="role-badge role-{{ role }}">{{ role }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- ADMIN VIEW -->
+  @if (role === 'admin') {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Users</h3>
+        <p class="stat-number">{{ users.length }}</p>
+        <a routerLink="/users">Manage Users</a>
+      </div>
+      <div class="stat-card">
+        <h3>Boards</h3>
+        <p class="stat-number">{{ boards.length }}</p>
+        <a routerLink="/boards">View Boards</a>
+      </div>
+      <div class="stat-card">
+        <h3>Tasks</h3>
+        <p class="stat-number">{{ tasks.length }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Done</h3>
+        <p class="stat-number">{{ getTaskCount('done') }}</p>
+      </div>
+    </div>
+  }
+
+  <!-- MANAGER VIEW -->
+  @if (role === 'manager') {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Boards</h3>
+        <p class="stat-number">{{ boards.length }}</p>
+        <a routerLink="/boards">View Boards</a>
+      </div>
+      <div class="stat-card">
+        <h3>Total Tasks</h3>
+        <p class="stat-number">{{ tasks.length }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>In Progress</h3>
+        <p class="stat-number">{{ getTaskCount('working_on_it') }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Done</h3>
+        <p class="stat-number">{{ getTaskCount('done') }}</p>
+      </div>
+    </div>
+  }
+
+  <!-- EMPLOYEE VIEW -->
+  @if (role === 'employee') {
+    <div class="employee-section">
+      <h2>My Tasks</h2>
+      @if (tasks.length === 0) {
+        <p class="empty">No tasks assigned to you.</p>
+      }
+      <div class="task-list">
+        @for (task of tasks; track task.id) {
+          <div class="task-card status-{{ task.status }}">
+            <h4>{{ task.title }}</h4>
+            <p>{{ task.description }}</p>
+            <span class="status-badge">{{ task.status }}</span>
+            @if (task.dueDate) {
+              <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
