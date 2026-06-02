@@ -1,1 +1,54 @@
-<p>users works!</p>
+<app-navbar />
+<div class="users-container">
+
+  @if (role === 'admin') {
+    <h2>All Users</h2>
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>Position</th>
+          <th>Role</th>
+          <th>Active</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user.id) {
+          <tr>
+            <td>{{ user.firstname }} {{ user.lastname }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.department }}</td>
+            <td>{{ user.position }}</td>
+            <td><span class="role-badge role-{{ user.role.role }}">{{ user.role.role }}</span></td>
+            <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (role === 'manager') {
+    <h2>My Team</h2>
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Position</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (summary of userSummaries; track summary.id) {
+          <tr>
+            <td>{{ summary.firstname }} {{ summary.lastname }}</td>
+            <td>{{ summary.department }}</td>
+            <td>{{ summary.position }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+</div>
