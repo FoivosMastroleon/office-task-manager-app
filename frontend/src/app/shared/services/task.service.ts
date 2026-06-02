@@ -21,11 +21,11 @@ export class TaskService {
   }
 
   getTasksByBoardId(boardId: string): Observable<Task[]> {
-    return this.http.get<Task[]>(`${this.apiUrl}?boardId=${boardId}`);
+    return this.http.get<Task[]>(`${this.apiUrl}/board/${boardId}`);
   }
 
   getTasksByAssignee(userId: string): Observable<Task[]> {
-    return this.http.get<Task[]>(`${this.apiUrl}?assignedTo=${userId}`);
+    return this.http.get<Task[]>(`${this.apiUrl}/assignee/${userId}`);
   }
 
   createTask(data: Partial<Task>): Observable<Task> {

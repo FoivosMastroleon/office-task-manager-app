@@ -1,1 +1,95 @@
-<p>board-detail works!</p>
+<app-navbar />
+
+@if (board()) {
+  <div class="board-detail-container">
+
+    <div class="board-detail-header">
+      <div>
+        <h1>{{ board()!.title }}</h1>
+        @if (board()!.description) {
+          <p class="board-description">{{ board()!.description }}</p>
+        }
+      </div>
+      <div class="members">
+        @for (member of board()!.members; track member.id) {
+          <span class="member-avatar" [title]="member.firstname + ' ' + member.lastname">
+            {{ member.firstname?.charAt(0) }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="kanban-board">
+
+      <div class="kanban-column">
+        <div class="column-header todo">
+          <span>To Do</span>
+          <span class="count">{{ todoTasks.length }}</span>
+        </div>
+        <div class="task-list">
+          @for (task of todoTasks; track task.id) {
+            <div class="task-card">
+              <h4>{{ task.title }}</h4>
+              @if (task.description) {
+                <p>{{ task.description }}</p>
+              }
+              @if (task.assignedTo) {
+                <span class="assignee">{{ task.assignedTo.firstname }}</span>
+              }
+              @if (task.dueDate) {
+                <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="kanban-column">
+        <div class="column-header in-progress">
+          <span>Working On It</span>
+          <span class="count">{{ inProgressTasks.length }}</span>
+        </div>
+        <div class="task-list">
+          @for (task of inProgressTasks; track task.id) {
+            <div class="task-card">
+              <h4>{{ task.title }}</h4>
+              @if (task.description) {
+                <p>{{ task.description }}</p>
+              }
+              @if (task.assignedTo) {
+                <span class="assignee">{{ task.assignedTo.firstname }}</span>
+              }
+              @if (task.dueDate) {
+                <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="kanban-column">
+        <div class="column-header done">
+          <span>Done</span>
+          <span class="count">{{ doneTasks.length }}</span>
+        </div>
+        <div class="task-list">
+          @for (task of doneTasks; track task.id) {
+            <div class="task-card">
+              <h4>{{ task.title }}</h4>
+              @if (task.description) {
+                <p>{{ task.description }}</p>
+              }
+              @if (task.assignedTo) {
+                <span class="assignee">{{ task.assignedTo.firstname }}</span>
+              }
+              @if (task.dueDate) {
+                <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+}

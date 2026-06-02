@@ -10,8 +10,8 @@ export interface Task {
     status: 'todo' | 'working_on_it' | 'done';
     board: Board;
     isActive: boolean;
-    assignedTo: IUser;
-    assignedBy: IUser;
+    assignedTo?: IUser;
+    assignedBy?: IUser;
     dueDate?: Date;
     createdAt: Date;
     updatedAt: Date;

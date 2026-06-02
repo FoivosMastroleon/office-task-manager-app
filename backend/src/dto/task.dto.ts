@@ -37,8 +37,8 @@ export interface TaskResponseDTO {
     status: TaskStatus;
     board: BoardResponseDTO;
     isActive: boolean;
-    assignedTo: UserResponseDTO;
-    assignedBy: UserResponseDTO;
+    assignedTo?: UserResponseDTO;
+    assignedBy?: UserResponseDTO;
     dueDate?: Date;
     createdAt: Date;
     updatedAt: Date;
