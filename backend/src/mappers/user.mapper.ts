@@ -1,4 +1,4 @@
-import { UserResponseDTO } from '../dto/user.dto';
+import { UserResponseDTO, UserSummaryDTO } from '../dto/user.dto';
 
 export function mapUserToResponse(user: any): UserResponseDTO {
     return {
@@ -18,5 +18,15 @@ export function mapUserToResponse(user: any): UserResponseDTO {
         isActive: user.isActive,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
+    };
+}
+
+export function mapUserToSummary(user: any): UserSummaryDTO {
+    return {
+        id: user._id.toString(),
+        firstname: user.firstname,
+        lastname: user.lastname,
+        department: user.department,
+        position: user.position,
     };
 }

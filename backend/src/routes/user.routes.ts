@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as userCtrl from '../controller/user.controller';
 import { authenticate } from '../middlewares/auth.middleware';
-import { hasAdminRole } from '../middlewares/role.middleware';
+import { hasAdminRole, hasAdminOrManagerRole } from '../middlewares/role.middleware';
 import { validate } from '../middlewares/validate.middleware';
 import { createUserSchema, updateUserSchema } from '../validators/user.validator';
 
@@ -65,6 +65,8 @@ router.post('/', authenticate, hasAdminRole, validate(createUserSchema), userCtr
  *      404:
  *        description: User not found
  */
+router.get('/summary', authenticate, hasAdminOrManagerRole, userCtrl.getUserSummaries);
+
 router.get('/:id', authenticate, hasAdminRole, userCtrl.getUserById);
 
 /**

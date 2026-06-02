@@ -37,3 +37,12 @@ export interface UserResponseDTO {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface UserSummaryDTO {
+    id: string;
+    firstname?: string;
+    lastname?: string;
+    department?: string;
+    position?: string;
+    
+}

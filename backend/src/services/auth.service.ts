@@ -41,10 +41,11 @@ export const googleLogin = async (idToken: string) => {
         if (!user) return { status: false, message: 'Could not create user' };
 
         const token = jwt.sign(
-            { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role },
-            JWT_SECRET,
-            { expiresIn: JWT_EXPIRES_IN }
+    { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role, firstname: user.firstname },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN }
         );
+
 
         return { status: true, token };
 

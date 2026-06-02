@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import * as userService from '../services/user.service';
 import { CreateUserDTO, UpdateUserDTO } from '../dto/user.dto';
-import { mapUserToResponse } from '../mappers/user.mapper';
+import { mapUserToResponse, mapUserToSummary } from '../mappers/user.mapper';
+
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -86,6 +87,17 @@ export const softDelete = async (req: Request, res: Response, next: NextFunction
         const result = await userService.softDeleteUser(id);
         if (!result) return res.status(404).json({ message: 'User not found' });
         res.status(200).json(mapUserToResponse(result));
+    } catch (err) {
+        next(err);
+    }
+
+
+}
+
+export const getUserSummaries = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await userService.findUsers();
+        res.status(200).json(users.map(mapUserToSummary));
     } catch (err) {
         next(err);
     }
