@@ -5,12 +5,12 @@
     <h1>Boards</h1>
   </div>
 
-  @if (boards.length === 0) {
+  @if (boards().length === 0) {
     <p class="empty-state">No boards found.</p>
   }
 
   <div class="boards-grid">
-    @for (board of boards; track board.id) {
+    @for (board of boards(); track board.id) {
       <div class="board-card" [routerLink]="['/boards', board.id]">
         <div class="board-card-color"></div>
         <div class="board-card-body">

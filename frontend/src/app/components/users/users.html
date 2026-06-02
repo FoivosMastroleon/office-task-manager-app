@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of users; track user.id) {
+        @for (user of users(); track user.id) {
           <tr>
             <td>{{ user.firstname }} {{ user.lastname }}</td>
             <td>{{ user.email }}</td>
@@ -40,7 +40,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (summary of userSummaries; track summary.id) {
+        @for (summary of userSummaries(); track summary.id) {
           <tr>
             <td>{{ summary.firstname }} {{ summary.lastname }}</td>
             <td>{{ summary.department }}</td>

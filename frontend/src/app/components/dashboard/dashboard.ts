@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
@@ -23,9 +23,9 @@ export class Dashboard implements OnInit {
   private boardService = inject(BoardService);
   private userService = inject(UserService);
 
-  tasks: Task[] = [];
-  boards: Board[] = [];
-  users: IUser[] = [];
+  tasks = signal<Task[]>([]);
+  boards = signal<Board[]>([]);
+  users = signal<IUser[]>([]);
 
   get user() {
     return this.authService.loggedInUser();
@@ -37,14 +37,14 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     if (this.role === 'admin') {
-      this.userService.getUsers().subscribe(u => this.users = u);
-      this.boardService.getBoards().subscribe(b => this.boards = b);
-      this.taskService.getTasks().subscribe(t => this.tasks = t);
+      this.userService.getUsers().subscribe(u => this.users.set(u));
+      this.boardService.getBoards().subscribe(b => this.boards.set(b));
+      this.taskService.getTasks().subscribe(t => this.tasks.set(t));
     } else if (this.role === 'manager') {
-      this.boardService.getBoards().subscribe(b => this.boards = b);
-      this.taskService.getTasks().subscribe(t => this.tasks = t);
+      this.boardService.getBoards().subscribe(b => this.boards.set(b));
+      this.taskService.getTasks().subscribe(t => this.tasks.set(t));
     } else if (this.role === 'employee' && this.user) {
-      this.taskService.getTasksByAssignee(this.user.userId).subscribe(t => this.tasks = t);
+      this.taskService.getTasksByAssignee(this.user.userId).subscribe(t => this.tasks.set(t));
     }
   }
 
@@ -53,6 +53,6 @@ export class Dashboard implements OnInit {
   }
 
   getTaskCount(status: string): number {
-    return this.tasks.filter(t => t.status === status).length;
+    return this.tasks().filter(t => t.status === status).length;
   }
 }
