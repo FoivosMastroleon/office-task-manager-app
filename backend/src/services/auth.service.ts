@@ -31,7 +31,8 @@ export const googleLogin = async (idToken: string) => {
             const newUser = await userDAO.createUser({
                 username: googleUser.email,
                 email: googleUser.email,
-                firstname: googleUser.name,
+                firstname: googleUser.given_name ?? googleUser.name,
+                lastname: googleUser.family_name,
                 role: employeeRole._id,
             });
 
@@ -41,7 +42,7 @@ export const googleLogin = async (idToken: string) => {
         if (!user) return { status: false, message: 'Could not create user' };
 
         const token = jwt.sign(
-    { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role, firstname: user.firstname },
+    { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role, firstname: user.firstname, lastname: user.lastname },
     JWT_SECRET,
     { expiresIn: JWT_EXPIRES_IN }
         );

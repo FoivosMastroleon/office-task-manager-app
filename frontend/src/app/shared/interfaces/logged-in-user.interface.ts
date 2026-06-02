@@ -3,4 +3,5 @@ export interface ILoggedInUser {
   email: string;
   role: 'admin' | 'manager' | 'employee';
   firstname?: string;
+  lastname?: string;
 }
