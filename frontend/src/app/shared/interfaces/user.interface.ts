@@ -18,3 +18,11 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IUserSummary {
+  id: string;
+  firstname?: string;
+  lastname?: string;
+  department?: string;
+  position?: string;
+}

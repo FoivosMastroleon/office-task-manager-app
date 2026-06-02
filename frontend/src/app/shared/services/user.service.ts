@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { IUser } from '../interfaces/user.interface';
+import { IUser, IUserSummary } from '../interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -16,6 +16,10 @@ export class UserService {
 
   getUserById(id: string): Observable<IUser> {
     return this.http.get<IUser>(`${this.apiUrl}/${id}`);
+  }
+
+  getUserSummaries(): Observable<IUserSummary[]> {
+    return this.http.get<IUserSummary[]>(`${this.apiUrl}/summary`);
   }
 
   createUser(data: Partial<IUser>): Observable<IUser> {
