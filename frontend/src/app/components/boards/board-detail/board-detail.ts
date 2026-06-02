@@ -1,15 +1,17 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { Navbar } from '../../navbar/navbar';
 import { BoardService } from '../../../shared/services/board.service';
 import { TaskService } from '../../../shared/services/task.service';
+import { AuthService } from '../../../shared/services/auth.service';
 import { Board } from '../../../shared/interfaces/board.interface';
 import { Task } from '../../../shared/interfaces/task.interface';
 
 @Component({
   selector: 'app-board-detail',
-  imports: [CommonModule, RouterModule, Navbar],
+  imports: [CommonModule, FormsModule, RouterModule, Navbar],
   templateUrl: './board-detail.html',
   styleUrl: './board-detail.scss',
 })
@@ -17,25 +19,63 @@ export class BoardDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private boardService = inject(BoardService);
   private taskService = inject(TaskService);
+  private authService = inject(AuthService);
 
   board = signal<Board | null>(null);
   tasks = signal<Task[]>([]);
+  activeColumn = signal<'todo' | 'working_on_it' | 'done' | null>(null);
 
-  get todoTasks() {
-    return this.tasks().filter(t => t.status === 'todo');
-  }
+  newTitle = '';
+  newDescription = '';
+  newAssignedTo = '';
+  newDueDate = '';
 
-  get inProgressTasks() {
-    return this.tasks().filter(t => t.status === 'working_on_it');
-  }
-
-  get doneTasks() {
-    return this.tasks().filter(t => t.status === 'done');
-  }
+  get todoTasks() { return this.tasks().filter(t => t.status === 'todo'); }
+  get inProgressTasks() { return this.tasks().filter(t => t.status === 'working_on_it'); }
+  get doneTasks() { return this.tasks().filter(t => t.status === 'done'); }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.boardService.getBoardById(id).subscribe(b => this.board.set(b));
     this.taskService.getTasksByBoardId(id).subscribe(t => this.tasks.set(t));
   }
+
+  openForm(column: 'todo' | 'working_on_it' | 'done') {
+    this.activeColumn.set(column);
+    this.newTitle = '';
+    this.newDescription = '';
+    this.newAssignedTo = '';
+    this.newDueDate = '';
+  }
+
+  cancelForm() {
+    this.activeColumn.set(null);
+  }
+
+  submitTask(status: 'todo' | 'working_on_it' | 'done') {
+    const boardId = this.route.snapshot.paramMap.get('id')!;
+    const userId = this.authService.loggedInUser()!.userId;
+
+    this.taskService.createTask({
+      title: this.newTitle,
+      description: this.newDescription,
+      board: boardId,
+      assignedTo: this.newAssignedTo,
+      assignedBy: userId,
+      dueDate: this.newDueDate ? new Date(this.newDueDate) : undefined,
+      status
+    } as any).subscribe(task => {
+      this.tasks.update(tasks => [...tasks, task]);
+      this.activeColumn.set(null);
+    });
+  }
+
+  updateStatus(taskId: string, status: 'todo' | 'working_on_it' | 'done') {
+  this.taskService.updateTaskStatus(taskId, status).subscribe(updated => {
+    this.tasks.update(tasks =>
+      tasks.map(t => t.id === updated.id ? updated : t)
+    );
+  });
+}
+
 }
