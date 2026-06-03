@@ -33,4 +33,12 @@ export class UserService {
   deleteUser(id: string): Observable<IUser> {
     return this.http.delete<IUser>(`${this.apiUrl}/${id}`);
   }
+
+  getRoles(): Observable<{ _id: string; role: string }[]> {
+    return this.http.get<{ _id: string; role: string }[]>(`${environment.apiURL}/roles`);
+  }
+
+  restoreUser(id: string): Observable<IUser> {
+    return this.http.patch<IUser>(`${this.apiUrl}/${id}/restore`, {});
+  }
 }

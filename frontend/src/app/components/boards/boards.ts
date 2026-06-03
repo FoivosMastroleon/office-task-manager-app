@@ -20,9 +20,14 @@ export class Boards implements OnInit {
   boards = signal<Board[]>([]);
   showForm = signal(false);
   editingBoard = signal<Board | null>(null);
+  activeFilter = signal<'active' | 'inactive'>('active');
 
   formTitle = '';
   formDescription = '';
+
+  get filteredBoards() {
+    return this.boards().filter(b => this.activeFilter() === 'active' ? b.isActive : !b.isActive);
+  }
 
   get canManage() {
     const role = this.authService.loggedInUser()?.role;
@@ -30,7 +35,12 @@ export class Boards implements OnInit {
   }
 
   ngOnInit(): void {
-    this.boardService.getBoards().subscribe(b => this.boards.set(b));
+    const role = this.authService.loggedInUser()?.role;
+    if (role === 'admin') {
+      this.boardService.getBoardsIncludingInactive().subscribe(b => this.boards.set(b));
+    } else {
+      this.boardService.getBoards().subscribe(b => this.boards.set(b));
+    }
   }
 
   openCreate() {
@@ -70,7 +80,13 @@ export class Boards implements OnInit {
 
   deleteBoard(id: string) {
     this.boardService.deleteBoard(id).subscribe(() => {
-      this.boards.update(bs => bs.filter(b => b.id !== id));
+      this.boards.update(bs => bs.map(b => b.id === id ? { ...b, isActive: false } : b));
+    });
+  }
+
+  restoreBoard(id: string) {
+    this.boardService.restoreBoard(id).subscribe(updated => {
+      this.boards.update(bs => bs.map(b => b.id === updated.id ? updated : b));
     });
   }
 }

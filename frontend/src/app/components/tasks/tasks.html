@@ -3,11 +3,18 @@
 <div class="tasks-container">
   <div class="tasks-header">
     <h1>Tasks</h1>
-    <div class="filter-buttons">
-      <button [class.active]="activeFilter() === 'all'" (click)="setFilter('all')">All</button>
-      <button [class.active]="activeFilter() === 'active'" (click)="setFilter('active')">Active</button>
-      <button [class.active]="activeFilter() === 'done'" (click)="setFilter('done')">Done</button>
-    </div>
+    @if (!showInactive()) {
+      <div class="filter-buttons">
+        <button [class.active]="activeFilter() === 'all'" (click)="setFilter('all')">All</button>
+        <button [class.active]="activeFilter() === 'active'" (click)="setFilter('active')">Active</button>
+        <button [class.active]="activeFilter() === 'done'" (click)="setFilter('done')">Done</button>
+      </div>
+    }
+    @if (role === 'admin') {
+      <button class="toggle-inactive" (click)="showInactive.set(!showInactive())">
+        {{ showInactive() ? '← Active Tasks' : 'Inactive Tasks' }}
+      </button>
+    }
   </div>
 
   @if (filteredTasks.length === 0) {
@@ -55,7 +62,11 @@
               <a class="board-link" [routerLink]="['/boards', task.board.id]">{{ task.board.title }}</a>
             }
             @if (canManage) {
-              <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+              @if (task.isActive) {
+                <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+              } @else {
+                <button class="restore-btn" (click)="restoreTask(task.id)">↺</button>
+              }
             }
           </div>
         }

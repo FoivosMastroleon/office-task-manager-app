@@ -121,6 +121,30 @@
   &:hover { text-decoration: underline; }
 }
 
+.toggle-inactive {
+  margin-left: auto;
+  padding: 6px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  color: #6d6e6f;
+  &:hover { background: #f0f0f0; }
+}
+
+.restore-btn {
+  margin-left: auto;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid #2e7d32;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #2e7d32;
+  &:hover { background: #e8f5e9; }
+}
+
 .edit-btn {
   margin-left: auto;
   padding: 3px 8px;

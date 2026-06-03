@@ -16,6 +16,10 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
+  getTasksIncludingInactive(): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.apiUrl}/all`);
+  }
+
   getTaskById(id: string): Observable<Task> {
     return this.http.get<Task>(`${this.apiUrl}/${id}`);
   }

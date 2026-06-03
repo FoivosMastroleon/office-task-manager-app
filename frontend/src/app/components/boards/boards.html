@@ -4,7 +4,11 @@
   <div class="boards-header">
     <h1>Boards</h1>
     @if (canManage) {
-      <button (click)="openCreate()"> Create New Board</button>
+      <div class="filter-buttons">
+        <button [class.active]="activeFilter() === 'active'" (click)="activeFilter.set('active')">Active</button>
+        <button [class.active]="activeFilter() === 'inactive'" (click)="activeFilter.set('inactive')">Inactive</button>
+      </div>
+      <button (click)="openCreate()">+ Create New Board</button>
     }
   </div>
 
@@ -27,12 +31,12 @@
     </div>
   }
 
-  @if (boards().length === 0) {
+  @if (filteredBoards.length === 0) {
     <p class="empty-state">No boards found.</p>
   }
 
   <div class="boards-grid">
-    @for (board of boards(); track board.id) {
+    @for (board of filteredBoards; track board.id) {
       <div class="board-card" [routerLink]="['/boards', board.id]">
         <div class="board-card-color"></div>
         <div class="board-card-body">
@@ -43,8 +47,12 @@
           <div class="board-footer">
             @if (canManage) {
               <div class="board-actions">
-                <button (click)="openEdit(board); $event.stopPropagation()">Edit</button>
-                <button (click)="deleteBoard(board.id); $event.stopPropagation()">Delete</button>
+                @if (board.isActive) {
+                  <button (click)="openEdit(board); $event.stopPropagation()">Edit</button>
+                  <button (click)="deleteBoard(board.id); $event.stopPropagation()">Delete</button>
+                } @else {
+                  <button (click)="restoreBoard(board.id); $event.stopPropagation()">↺ Restore</button>
+                }
               </div>
             }
             <span class="members-count">

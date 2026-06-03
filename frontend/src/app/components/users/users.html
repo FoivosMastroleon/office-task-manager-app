@@ -2,7 +2,48 @@
 <div class="users-container">
 
   @if (role === 'admin') {
-    <h2>All Users</h2>
+    <div class="users-header">
+      <h2>All Users</h2>
+      <div class="filter-buttons">
+        <button [class.active]="activeFilter() === 'active'" (click)="activeFilter.set('active')">Active</button>
+        <button [class.active]="activeFilter() === 'inactive'" (click)="activeFilter.set('inactive')">Inactive</button>
+      </div>
+      <button class="btn-new" (click)="openCreate()">+ New User</button>
+    </div>
+
+    @if (showForm()) {
+      <div class="user-form">
+        <h3>Create User</h3>
+        <div class="form-grid">
+          <input [(ngModel)]="formFirstname" placeholder="First name" />
+          <input [(ngModel)]="formLastname" placeholder="Last name" />
+          <input [(ngModel)]="formEmail" placeholder="Email *" type="email" />
+          <select [(ngModel)]="formRole">
+            <option value="">Select role *</option>
+            @for (r of roles(); track r._id) {
+              <option [value]="r._id">{{ r.role }}</option>
+            }
+          </select>
+          <select [(ngModel)]="formDepartment">
+            <option value="">Select department</option>
+            @for (d of departments; track d) {
+              <option [value]="d">{{ d }}</option>
+            }
+          </select>
+          <select [(ngModel)]="formPosition">
+            <option value="">Select position</option>
+            @for (p of positions; track p) {
+              <option [value]="p">{{ p }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="submitForm()">Create</button>
+          <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
+        </div>
+      </div>
+    }
+
     <table class="users-table">
       <thead>
         <tr>
@@ -12,18 +53,55 @@
           <th>Position</th>
           <th>Role</th>
           <th>Active</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        @for (user of users(); track user.id) {
-          <tr>
-            <td>{{ user.firstname }} {{ user.lastname }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.department }}</td>
-            <td>{{ user.position }}</td>
-            <td><span class="role-badge role-{{ user.role.role }}">{{ user.role.role }}</span></td>
-            <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
-          </tr>
+        @for (user of filteredUsers; track user.id) {
+          @if (editingUser()?.id === user.id) {
+            <tr class="editing-row">
+              <td colspan="2">{{ user.firstname }} {{ user.lastname }}</td>
+              <td>
+                <select [(ngModel)]="editDepartment">
+                  <option value="">—</option>
+                  @for (d of departments; track d) {
+                    <option [value]="d">{{ d }}</option>
+                  }
+                </select>
+              </td>
+              <td>
+                <select [(ngModel)]="editPosition">
+                  <option value="">—</option>
+                  @for (p of positions; track p) {
+                    <option [value]="p">{{ p }}</option>
+                  }
+                </select>
+              </td>
+              <td><span class="role-badge role-{{ user.role.role }}">{{ user.role.role }}</span></td>
+              <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+              <td class="actions-cell">
+                <button class="btn-save-sm" (click)="submitEdit()">Save</button>
+                <button class="btn-cancel-sm" (click)="cancelEdit()">Cancel</button>
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td>{{ user.firstname }} {{ user.lastname }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.department }}</td>
+              <td>{{ user.position }}</td>
+              <td><span class="role-badge role-{{ user.role.role }}">{{ user.role.role }}</span></td>
+              <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+              <td class="actions-cell">
+                @if (user.isActive) {
+                  <button class="btn-edit-sm" (click)="openEdit(user)">✎</button>
+                  <button class="btn-delete-sm" (click)="deleteUser(user.id)">✕</button>
+                } @else {
+                  <button class="btn-restore-sm" (click)="restoreUser(user.id)">↺ Restore</button>
+                }
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>

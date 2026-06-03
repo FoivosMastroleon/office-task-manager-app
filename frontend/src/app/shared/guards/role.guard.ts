@@ -14,3 +14,16 @@ export const adminManagerGuard: CanActivateFn = () => {
 
   return router.createUrlTree(['/dashboard']);
 };
+
+export const adminGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  const role = authService.loggedInUser()?.role;
+
+  if (role === 'admin') {
+    return true;
+  }
+
+  return router.createUrlTree(['/dashboard']);
+};

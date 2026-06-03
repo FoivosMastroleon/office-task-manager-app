@@ -24,6 +24,7 @@ export class Tasks implements OnInit {
   tasks = signal<Task[]>([]);
   allUsers = signal<IUser[]>([]);
   activeFilter = signal<'all' | 'active' | 'done'>('all');
+  showInactive = signal(false);
   editingTask = signal<Task | null>(null);
 
   editTitle = '';
@@ -36,10 +37,13 @@ export class Tasks implements OnInit {
   get canManage() { return this.role === 'admin' || this.role === 'manager'; }
 
   get filteredTasks() {
+    const base = this.showInactive()
+      ? this.tasks().filter(t => !t.isActive)
+      : this.tasks().filter(t => t.isActive);
     const f = this.activeFilter();
-    if (f === 'active') return this.tasks().filter(t => t.status !== 'done');
-    if (f === 'done') return this.tasks().filter(t => t.status === 'done');
-    return this.tasks();
+    if (f === 'active') return base.filter(t => t.status !== 'done');
+    if (f === 'done') return base.filter(t => t.status === 'done');
+    return base;
   }
 
   ngOnInit(): void {
@@ -49,7 +53,11 @@ export class Tasks implements OnInit {
     if (this.role === 'employee') {
       this.taskService.getTasksByAssignee(this.user!.userId).subscribe(t => this.tasks.set(t));
     } else {
-      this.taskService.getTasks().subscribe(t => this.tasks.set(t));
+      if (this.role === 'admin') {
+        this.taskService.getTasksIncludingInactive().subscribe(t => this.tasks.set(t));
+      } else {
+        this.taskService.getTasks().subscribe(t => this.tasks.set(t));
+      }
       this.userService.getUsers().subscribe(u => this.allUsers.set(u));
     }
   }
@@ -81,6 +89,12 @@ export class Tasks implements OnInit {
     } as any).subscribe(updated => {
       this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
       this.editingTask.set(null);
+    });
+  }
+
+  restoreTask(id: string) {
+    this.taskService.restoreTask(id).subscribe(updated => {
+      this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
     });
   }
 

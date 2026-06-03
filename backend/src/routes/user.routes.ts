@@ -118,5 +118,6 @@ router.patch('/:id', authenticate, hasAdminRole, validate(updateUserSchema), use
  *        description: User not found
  */
 router.delete('/:id', authenticate, hasAdminRole, userCtrl.softDelete);
+router.patch('/:id/restore', authenticate, hasAdminRole, userCtrl.restoreUser);
 
 export default router;

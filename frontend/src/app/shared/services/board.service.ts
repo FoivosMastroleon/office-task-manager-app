@@ -16,6 +16,10 @@ export class BoardService {
     return this.http.get<Board[]>(this.apiUrl);
   }
 
+  getBoardsIncludingInactive(): Observable<Board[]> {
+    return this.http.get<Board[]>(`${this.apiUrl}/all`);
+  }
+
   getBoardById(id: string): Observable<Board> {
     return this.http.get<Board>(`${this.apiUrl}/${id}`);
   }

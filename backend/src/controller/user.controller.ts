@@ -102,3 +102,14 @@ export const getUserSummaries = async (req: Request, res: Response, next: NextFu
         next(err);
     }
 }
+
+export const restoreUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.id;
+        const user = await userService.restoreUser(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.status(200).json(mapUserToResponse(user));
+    } catch (err) {
+        next(err);
+    }
+}

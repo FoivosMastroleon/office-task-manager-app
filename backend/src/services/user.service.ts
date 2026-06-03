@@ -47,3 +47,7 @@ export const updateUser = async (id: string, payload: UpdateUserDTO) => {
 export const softDeleteUser = async (id: string) => {
     return await userDAO.softDeleteUser(id);
 };
+
+export const restoreUser = async (id: string) => {
+    return await userDAO.restoreUser(id);
+};

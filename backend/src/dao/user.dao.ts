@@ -32,3 +32,11 @@ export const softDeleteUser = async (id: string): Promise<IUser | null> => {
         { new: true }
     ).populate('role', 'role description').lean().exec();
 };
+
+export const restoreUser = async (id: string): Promise<IUser | null> => {
+    return await User.findByIdAndUpdate(
+        id,
+        { isActive: true },
+        { new: true }
+    ).populate('role', 'role description').lean().exec();
+};
