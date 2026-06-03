@@ -156,7 +156,6 @@
 }
 
 .status-btn {
-  margin-left: auto;
   padding: 3px 10px;
   border: none;
   border-radius: 4px;
@@ -168,3 +167,15 @@
 }
 
 .done-card { opacity: 0.75; }
+
+.edit-btn {
+  margin-left: auto;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #888;
+  &:hover { background: #f0f0f0; color: #333; }
+}

@@ -121,6 +121,59 @@
   &:hover { text-decoration: underline; }
 }
 
+.edit-btn {
+  margin-left: auto;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #888;
+  &:hover { background: #f0f0f0; color: #333; }
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  input, select {
+    padding: 7px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 13px;
+    font-family: inherit;
+    &:focus { outline: none; border-color: #4d6ef5; }
+  }
+}
+
+.edit-form-actions {
+  display: flex;
+  gap: 8px;
+
+  .btn-save {
+    padding: 6px 14px;
+    background: #4d6ef5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    &:hover { background: #3a5be0; }
+  }
+
+  .btn-cancel {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    &:hover { background: #f0f0f0; }
+  }
+}
+
 .empty-state {
   color: #6d6e6f;
   font-size: 14px;

@@ -17,24 +17,49 @@
   <div class="tasks-grid">
     @for (task of filteredTasks; track task.id) {
       <div class="task-card status-{{ task.status }}">
-        <div class="task-card-header">
-          <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
-          @if (task.dueDate) {
-            <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+
+        @if (editingTask()?.id === task.id) {
+          <div class="edit-form">
+            <input [(ngModel)]="editTitle" placeholder="Title" />
+            <input [(ngModel)]="editDescription" placeholder="Description" />
+            @if (canManage) {
+              <select [(ngModel)]="editAssignedTo">
+                <option value="">Assign to...</option>
+                @for (user of allUsers(); track user.id) {
+                  <option [value]="user.id">{{ user.firstname }} {{ user.lastname }}</option>
+                }
+              </select>
+            }
+            <input type="date" [(ngModel)]="editDueDate" />
+            <div class="edit-form-actions">
+              <button class="btn-save" (click)="submitEditTask()">Save</button>
+              <button class="btn-cancel" (click)="cancelEditTask()">Cancel</button>
+            </div>
+          </div>
+        } @else {
+          <div class="task-card-header">
+            <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
+            @if (task.dueDate) {
+              <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+            }
+          </div>
+          <h3>{{ task.title }}</h3>
+          @if (task.description) {
+            <p class="task-description">{{ task.description }}</p>
           }
-        </div>
-        <h3>{{ task.title }}</h3>
-        @if (task.description) {
-          <p class="task-description">{{ task.description }}</p>
+          <div class="task-footer">
+            @if (task.assignedTo) {
+              <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+            }
+            @if (task.board) {
+              <a class="board-link" [routerLink]="['/boards', task.board.id]">{{ task.board.title }}</a>
+            }
+            @if (canManage) {
+              <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+            }
+          </div>
         }
-        <div class="task-footer">
-          @if (task.assignedTo) {
-            <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
-          }
-          @if (task.board) {
-            <a class="board-link" [routerLink]="['/boards', task.board.id]">{{ task.board.title }}</a>
-          }
-        </div>
+
       </div>
     }
   </div>

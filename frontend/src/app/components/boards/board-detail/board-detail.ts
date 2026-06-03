@@ -37,6 +37,11 @@ export class BoardDetail implements OnInit {
   newDescription = '';
   newAssignedTo = '';
   newDueDate = '';
+  editingTask = signal<Task | null>(null);
+  editTitle = '';
+  editDescription = '';
+  editAssignedTo = '';
+  editDueDate = '';
 
   get availableUsers() {
     const members = this.board()?.members.map(m => m.id) ?? [];
@@ -121,4 +126,29 @@ export class BoardDetail implements OnInit {
     });
   }
 
+  openEditTask(task: Task) {
+    this.editingTask.set(task);
+    this.editTitle = task.title;
+    this.editDescription = task.description ?? '';
+    this.editAssignedTo = task.assignedTo?.id ?? '';
+    this.editDueDate = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
+  }
+
+  cancelEditTask() {
+    this.editingTask.set(null);
+  }
+
+  submitEditTask() {
+    const task = this.editingTask();
+    if (!task) return;
+    this.taskService.updateTask(task.id, {
+      title: this.editTitle,
+      description: this.editDescription,
+      assignedTo: this.editAssignedTo,
+      dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined
+    } as any).subscribe(updated => {
+      this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
+      this.editingTask.set(null);
+    });
+  }
 }

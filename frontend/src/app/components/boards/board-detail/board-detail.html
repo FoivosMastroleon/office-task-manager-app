@@ -61,13 +61,34 @@
         <div class="task-list">
           @for (task of todoTasks; track task.id) {
             <div class="task-card">
-              <h4>{{ task.title }}</h4>
-              @if (task.description) { <p>{{ task.description }}</p> }
-              <div class="task-footer">
-                @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
-                @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
-                <button class="status-btn start" (click)="updateStatus(task.id, 'working_on_it')">▶ Start</button>
-              </div>
+              @if (editingTask()?.id === task.id) {
+                <div class="inline-form">
+                  <input [(ngModel)]="editTitle" placeholder="Title" />
+                  <input [(ngModel)]="editDescription" placeholder="Description" />
+                  <select [(ngModel)]="editAssignedTo">
+                    <option value="">Assign to...</option>
+                    @for (member of board()!.members; track member.id) {
+                      <option [value]="member.id">{{ member.firstname }} {{ member.lastname }}</option>
+                    }
+                  </select>
+                  <input type="date" [(ngModel)]="editDueDate" />
+                  <div class="form-actions">
+                    <button class="btn-add" (click)="submitEditTask()">Save</button>
+                    <button class="btn-cancel" (click)="cancelEditTask()">Cancel</button>
+                  </div>
+                </div>
+              } @else {
+                <h4>{{ task.title }}</h4>
+                @if (task.description) { <p>{{ task.description }}</p> }
+                <div class="task-footer">
+                  @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
+                  @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
+                  <button class="status-btn start" (click)="updateStatus(task.id, 'working_on_it')">▶ Start</button>
+                  @if (canManage) {
+                    <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+                  }
+                </div>
+              }
             </div>
           }
 
@@ -104,13 +125,34 @@
         <div class="task-list">
           @for (task of inProgressTasks; track task.id) {
             <div class="task-card">
-              <h4>{{ task.title }}</h4>
-              @if (task.description) { <p>{{ task.description }}</p> }
-              <div class="task-footer">
-                @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
-                @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
-                <button class="status-btn done-btn" (click)="updateStatus(task.id, 'done')">✓ Done</button>
-              </div>
+              @if (editingTask()?.id === task.id) {
+                <div class="inline-form">
+                  <input [(ngModel)]="editTitle" placeholder="Title" />
+                  <input [(ngModel)]="editDescription" placeholder="Description" />
+                  <select [(ngModel)]="editAssignedTo">
+                    <option value="">Assign to...</option>
+                    @for (member of board()!.members; track member.id) {
+                      <option [value]="member.id">{{ member.firstname }} {{ member.lastname }}</option>
+                    }
+                  </select>
+                  <input type="date" [(ngModel)]="editDueDate" />
+                  <div class="form-actions">
+                    <button class="btn-add" (click)="submitEditTask()">Save</button>
+                    <button class="btn-cancel" (click)="cancelEditTask()">Cancel</button>
+                  </div>
+                </div>
+              } @else {
+                <h4>{{ task.title }}</h4>
+                @if (task.description) { <p>{{ task.description }}</p> }
+                <div class="task-footer">
+                  @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
+                  @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
+                  <button class="status-btn done-btn" (click)="updateStatus(task.id, 'done')">✓ Done</button>
+                  @if (canManage) {
+                    <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+                  }
+                </div>
+              }
             </div>
           }
         </div>
@@ -125,12 +167,33 @@
         <div class="task-list">
           @for (task of doneTasks; track task.id) {
             <div class="task-card done-card">
-              <h4>{{ task.title }}</h4>
-              @if (task.description) { <p>{{ task.description }}</p> }
-              <div class="task-footer">
-                @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
-                @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
-              </div>
+              @if (editingTask()?.id === task.id) {
+                <div class="inline-form">
+                  <input [(ngModel)]="editTitle" placeholder="Title" />
+                  <input [(ngModel)]="editDescription" placeholder="Description" />
+                  <select [(ngModel)]="editAssignedTo">
+                    <option value="">Assign to...</option>
+                    @for (member of board()!.members; track member.id) {
+                      <option [value]="member.id">{{ member.firstname }} {{ member.lastname }}</option>
+                    }
+                  </select>
+                  <input type="date" [(ngModel)]="editDueDate" />
+                  <div class="form-actions">
+                    <button class="btn-add" (click)="submitEditTask()">Save</button>
+                    <button class="btn-cancel" (click)="cancelEditTask()">Cancel</button>
+                  </div>
+                </div>
+              } @else {
+                <h4>{{ task.title }}</h4>
+                @if (task.description) { <p>{{ task.description }}</p> }
+                <div class="task-footer">
+                  @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
+                  @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
+                  @if (canManage) {
+                    <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+                  }
+                </div>
+              }
             </div>
           }
         </div>
