@@ -22,10 +22,12 @@
       <div class="stat-card">
         <h3>Tasks</h3>
         <p class="stat-number">{{ tasks().length }}</p>
+        <a routerLink="/tasks">View Tasks</a>
       </div>
       <div class="stat-card">
         <h3>Done</h3>
         <p class="stat-number">{{ getTaskCount('done') }}</p>
+        <a routerLink="/tasks" [queryParams]="{filter: 'done'}">View Done</a>
       </div>
     </div>
     <div class="task-list-section">
@@ -59,6 +61,7 @@
       <div class="stat-card">
         <h3>Total Tasks</h3>
         <p class="stat-number">{{ tasks().length }}</p>
+        <a routerLink="/tasks">View Tasks</a>
       </div>
       <div class="stat-card">
         <h3>In Progress</h3>
@@ -67,6 +70,7 @@
       <div class="stat-card">
         <h3>Done</h3>
         <p class="stat-number">{{ getTaskCount('done') }}</p>
+        <a routerLink="/tasks" [queryParams]="{filter: 'done'}">View Done</a>
       </div>
     </div>
     <div class="task-list-section">

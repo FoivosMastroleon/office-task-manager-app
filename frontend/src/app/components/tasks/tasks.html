@@ -1,0 +1,41 @@
+<app-navbar />
+
+<div class="tasks-container">
+  <div class="tasks-header">
+    <h1>Tasks</h1>
+    <div class="filter-buttons">
+      <button [class.active]="activeFilter() === 'all'" (click)="setFilter('all')">All</button>
+      <button [class.active]="activeFilter() === 'active'" (click)="setFilter('active')">Active</button>
+      <button [class.active]="activeFilter() === 'done'" (click)="setFilter('done')">Done</button>
+    </div>
+  </div>
+
+  @if (filteredTasks.length === 0) {
+    <p class="empty-state">No tasks found.</p>
+  }
+
+  <div class="tasks-grid">
+    @for (task of filteredTasks; track task.id) {
+      <div class="task-card status-{{ task.status }}">
+        <div class="task-card-header">
+          <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
+          @if (task.dueDate) {
+            <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+          }
+        </div>
+        <h3>{{ task.title }}</h3>
+        @if (task.description) {
+          <p class="task-description">{{ task.description }}</p>
+        }
+        <div class="task-footer">
+          @if (task.assignedTo) {
+            <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+          }
+          @if (task.board) {
+            <a class="board-link" [routerLink]="['/boards', task.board.id]">{{ task.board.title }}</a>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
