@@ -38,11 +38,30 @@
       <div class="task-list">
         @for (task of tasks(); track task.id) {
           <div class="task-card status-{{ task.status }}">
-            <h4>{{ task.title }}</h4>
-            <p>{{ task.description }}</p>
-            <span class="status-badge">{{ task.status }}</span>
-            @if (task.dueDate) {
-              <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+            @if (editingTask()?.id === task.id) {
+              <div class="dash-edit-form">
+                <input [(ngModel)]="editTitle" placeholder="Title" />
+                <input [(ngModel)]="editDescription" placeholder="Description" />
+                <select [(ngModel)]="editAssignedTo">
+                  <option value="">Assign to...</option>
+                  @for (u of users(); track u.id) {
+                    <option [value]="u.id">{{ u.firstname }} {{ u.lastname }}</option>
+                  }
+                </select>
+                <input type="date" [(ngModel)]="editDueDate" />
+                <div class="dash-edit-actions">
+                  <button (click)="submitEditTask()">Save</button>
+                  <button (click)="cancelEditTask()">Cancel</button>
+                </div>
+              </div>
+            } @else {
+              <h4>{{ task.title }}</h4>
+              <p>{{ task.description }}</p>
+              <span class="status-badge">{{ task.status }}</span>
+              @if (task.dueDate) {
+                <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+              }
+              <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
             }
           </div>
         }
@@ -81,11 +100,30 @@
       <div class="task-list">
         @for (task of tasks(); track task.id) {
           <div class="task-card status-{{ task.status }}">
-            <h4>{{ task.title }}</h4>
-            <p>{{ task.description }}</p>
-            <span class="status-badge">{{ task.status }}</span>
-            @if (task.dueDate) {
-              <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+            @if (editingTask()?.id === task.id) {
+              <div class="dash-edit-form">
+                <input [(ngModel)]="editTitle" placeholder="Title" />
+                <input [(ngModel)]="editDescription" placeholder="Description" />
+                <select [(ngModel)]="editAssignedTo">
+                  <option value="">Assign to...</option>
+                  @for (u of users(); track u.id) {
+                    <option [value]="u.id">{{ u.firstname }} {{ u.lastname }}</option>
+                  }
+                </select>
+                <input type="date" [(ngModel)]="editDueDate" />
+                <div class="dash-edit-actions">
+                  <button (click)="submitEditTask()">Save</button>
+                  <button (click)="cancelEditTask()">Cancel</button>
+                </div>
+              </div>
+            } @else {
+              <h4>{{ task.title }}</h4>
+              <p>{{ task.description }}</p>
+              <span class="status-badge">{{ task.status }}</span>
+              @if (task.dueDate) {
+                <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+              }
+              <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
             }
           </div>
         }

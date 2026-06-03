@@ -98,3 +98,56 @@
 }
 
 .empty { color: #999; font-style: italic; }
+
+.dash-edit-btn {
+  margin-top: 8px;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #888;
+  &:hover { background: #f0f0f0; color: #333; }
+}
+
+.dash-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  input, select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 13px;
+    font-family: inherit;
+    &:focus { outline: none; border-color: #4d6ef5; }
+  }
+}
+
+.dash-edit-actions {
+  display: flex;
+  gap: 8px;
+
+  button:first-child {
+    padding: 6px 14px;
+    background: #4d6ef5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    &:hover { background: #3a5be0; }
+  }
+
+  button:last-child {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    &:hover { background: #f0f0f0; }
+  }
+}

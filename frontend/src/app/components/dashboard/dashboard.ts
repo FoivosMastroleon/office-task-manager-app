@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { TaskService } from '../../shared/services/task.service';
@@ -13,7 +14,7 @@ import { Navbar } from '../navbar/navbar';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, Navbar],
+  imports: [CommonModule, FormsModule, RouterModule, Navbar],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -26,6 +27,12 @@ export class Dashboard implements OnInit {
   tasks = signal<Task[]>([]);
   boards = signal<Board[]>([]);
   users = signal<IUser[]>([]);
+  editingTask = signal<Task | null>(null);
+
+  editTitle = '';
+  editDescription = '';
+  editAssignedTo = '';
+  editDueDate = '';
 
   get user() {
     return this.authService.loggedInUser();
@@ -54,5 +61,31 @@ export class Dashboard implements OnInit {
 
   getTaskCount(status: string): number {
     return this.tasks().filter(t => t.status === status).length;
+  }
+
+  openEditTask(task: Task) {
+    this.editingTask.set(task);
+    this.editTitle = task.title;
+    this.editDescription = task.description ?? '';
+    this.editAssignedTo = task.assignedTo?.id ?? '';
+    this.editDueDate = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
+  }
+
+  cancelEditTask() {
+    this.editingTask.set(null);
+  }
+
+  submitEditTask() {
+    const task = this.editingTask();
+    if (!task) return;
+    this.taskService.updateTask(task.id, {
+      title: this.editTitle,
+      description: this.editDescription,
+      assignedTo: this.editAssignedTo,
+      dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined
+    } as any).subscribe(updated => {
+      this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
+      this.editingTask.set(null);
+    });
   }
 }
