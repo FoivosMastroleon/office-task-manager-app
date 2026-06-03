@@ -54,7 +54,15 @@ export class BoardDetail implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.boardService.getBoardById(id).subscribe(b => this.board.set(b));
-    this.taskService.getTasksByBoardId(id).subscribe(t => this.tasks.set(t));
+    this.taskService.getTasksByBoardId(id).subscribe(t => {
+    const user = this.authService.loggedInUser();
+  if (user?.role === 'employee') {
+    this.tasks.set(t.filter(task => task.assignedTo?.id === user.userId));
+  } else {
+    this.tasks.set(t);
+  }
+});
+
     this.userService.getUsers().subscribe(u => this.allUsers.set(u));
 
   }

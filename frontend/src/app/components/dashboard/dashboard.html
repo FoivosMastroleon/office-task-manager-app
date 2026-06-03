@@ -28,6 +28,24 @@
         <p class="stat-number">{{ getTaskCount('done') }}</p>
       </div>
     </div>
+    <div class="task-list-section">
+      <h2>All Tasks</h2>
+      @if (tasks().length === 0) {
+        <p class="empty">No tasks found.</p>
+      }
+      <div class="task-list">
+        @for (task of tasks(); track task.id) {
+          <div class="task-card status-{{ task.status }}">
+            <h4>{{ task.title }}</h4>
+            <p>{{ task.description }}</p>
+            <span class="status-badge">{{ task.status }}</span>
+            @if (task.dueDate) {
+              <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+            }
+          </div>
+        }
+      </div>
+    </div>
   }
 
   <!-- MANAGER VIEW -->
@@ -49,6 +67,24 @@
       <div class="stat-card">
         <h3>Done</h3>
         <p class="stat-number">{{ getTaskCount('done') }}</p>
+      </div>
+    </div>
+    <div class="task-list-section">
+      <h2>Board Tasks</h2>
+      @if (tasks().length === 0) {
+        <p class="empty">No tasks found.</p>
+      }
+      <div class="task-list">
+        @for (task of tasks(); track task.id) {
+          <div class="task-card status-{{ task.status }}">
+            <h4>{{ task.title }}</h4>
+            <p>{{ task.description }}</p>
+            <span class="status-badge">{{ task.status }}</span>
+            @if (task.dueDate) {
+              <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
+            }
+          </div>
+        }
       </div>
     </div>
   }

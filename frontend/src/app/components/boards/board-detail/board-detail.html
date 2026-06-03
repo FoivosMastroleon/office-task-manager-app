@@ -71,24 +71,26 @@
             </div>
           }
 
-          @if (activeColumn() === 'todo') {
-            <div class="inline-form">
-              <input [(ngModel)]="newTitle" placeholder="Task title (min 10 chars)" />
-              <input [(ngModel)]="newDescription" placeholder="Description (optional)" />
-              <select [(ngModel)]="newAssignedTo">
-                <option value="">Assign to...</option>
-                @for (member of board()!.members; track member.id) {
-                  <option [value]="member.id">{{ member.firstname }} {{ member.lastname }}</option>
-                }
-              </select>
-              <input type="date" [(ngModel)]="newDueDate" />
-              <div class="form-actions">
-                <button class="btn-add" (click)="submitTask('todo')">Add Task</button>
-                <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
+          @if (canManage) {
+            @if (activeColumn() === 'todo') {
+              <div class="inline-form">
+                <input [(ngModel)]="newTitle" placeholder="Task title (min 10 chars)" />
+                <input [(ngModel)]="newDescription" placeholder="Description (optional)" />
+                <select [(ngModel)]="newAssignedTo">
+                  <option value="">Assign to...</option>
+                  @for (member of board()!.members; track member.id) {
+                    <option [value]="member.id">{{ member.firstname }} {{ member.lastname }}</option>
+                  }
+                </select>
+                <input type="date" [(ngModel)]="newDueDate" />
+                <div class="form-actions">
+                  <button class="btn-add" (click)="submitTask('todo')">Add Task</button>
+                  <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
+                </div>
               </div>
-            </div>
-          } @else {
-            <button class="add-task-btn" (click)="openForm('todo')">+ Add Task</button>
+            } @else {
+              <button class="add-task-btn" (click)="openForm('todo')">+ Add Task</button>
+            }
           }
         </div>
       </div>
