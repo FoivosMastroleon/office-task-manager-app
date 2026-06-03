@@ -23,3 +23,15 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
         next(err);
     }
 };
+
+export const demoLogin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { role } = req.body;
+        const result = await authService.demoLogin(role);
+        if (!result.status) return res.status(400).json({ status: false, message: result.message });
+        res.status(200).json({ status: true, token: result.token });
+    } catch (err) {
+        next(err);
+    }
+};
+

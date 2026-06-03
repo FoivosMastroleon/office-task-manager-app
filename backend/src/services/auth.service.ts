@@ -59,3 +59,33 @@ export const googleLogin = async (idToken: string) => {
 export const getMe = async (userId: string) => {
     return await userDAO.findById(userId);
 };
+
+export const demoLogin = async (role: 'admin' | 'manager' | 'employee') => {
+    const roleDoc = await Role.findOne({ role });
+    if (!roleDoc) return { status: false, message: `Role ${role} not found` };
+
+    const email = `demo-${role}@demo.com`;
+    let user = await User.findOne({ email }).populate('role', 'role description').lean().exec();
+
+    if (!user) {
+        const newUser = await userDAO.createUser({
+            username: email,
+            email,
+            firstname: `Demo`,
+            lastname: role.charAt(0).toUpperCase() + role.slice(1),
+            role: roleDoc._id,
+        });
+        user = await User.findById(newUser._id).populate('role', 'role description').lean().exec();
+    }
+
+    if (!user) return { status: false, message: 'Could not create demo user' };
+
+    const token = jwt.sign(
+        { userId: user._id, email: user.email, role: ((user.role as unknown) as IRole).role, firstname: user.firstname, lastname: user.lastname },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+    );
+
+    return { status: true, token };
+};
+

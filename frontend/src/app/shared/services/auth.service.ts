@@ -35,6 +35,19 @@ export class AuthService {
       });
   }
 
+  demoLogin(role: 'admin' | 'manager' | 'employee') {
+    return this.http
+      .post<{ token: string }>(`${environment.apiURL}/auth/demo-login`, { role })
+      .subscribe({
+        next: (res) => {
+          localStorage.setItem(TOKEN_KEY, res.token);
+          this.loggedInUser.set(jwtDecode<ILoggedInUser>(res.token));
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => console.error('Demo login failed', err),
+      });
+  }
+
   logout() {
     localStorage.removeItem(TOKEN_KEY);
     this.loggedInUser.set(null);

@@ -13,6 +13,10 @@ declare var google: any;
 export class Login implements AfterViewInit {
   constructor(private authService: AuthService) {}
 
+  onDemoLogin(role: 'admin' | 'manager' | 'employee') {
+    this.authService.demoLogin(role);
+  }
+
   ngAfterViewInit(): void {
     google.accounts.id.initialize({
       client_id: environment.googleClientId,

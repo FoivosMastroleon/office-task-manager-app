@@ -43,4 +43,7 @@ router.post('/google-auth', authCtrl.googleLogin);
  */
 router.get('/me', authenticate, authCtrl.getMe);
 
+router.post('/demo-login', authCtrl.demoLogin);
+
+
 export default router;
