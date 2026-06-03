@@ -6,6 +6,21 @@
     <span class="role-badge role-{{ role }}">{{ role }}</span>
   </header>
 
+  <!-- WEATHER WIDGET -->
+  <div class="weather-widget">
+    @if (weatherService.loading()) {
+      <span class="weather-loading">Loading weather...</span>
+    } @else if (weatherService.error()) {
+      <span class="weather-error">{{ weatherService.error() }}</span>
+    } @else if (weatherService.weather()) {
+      <img [src]="'https://openweathermap.org/img/wn/' + weatherService.weather()!.icon + '.png'" alt="weather icon" />
+      <span class="weather-temp">{{ weatherService.weather()!.temp }}°C</span>
+      <span class="weather-desc">{{ weatherService.weather()!.description }}</span>
+      <span class="weather-city">{{ weatherService.weather()!.city }}</span>
+      <span class="weather-feels">Feels like {{ weatherService.weather()!.feelsLike }}°C · {{ weatherService.weather()!.humidity }}% humidity</span>
+    }
+  </div>
+
   <!-- ADMIN VIEW -->
   @if (role === 'admin') {
     <div class="stats-grid">

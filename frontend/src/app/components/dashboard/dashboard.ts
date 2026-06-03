@@ -6,6 +6,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { TaskService } from '../../shared/services/task.service';
 import { BoardService } from '../../shared/services/board.service';
 import { UserService } from '../../shared/services/user.service';
+import { WeatherService } from '../../shared/services/weather.service';
 import { Task } from '../../shared/interfaces/task.interface';
 import { Board } from '../../shared/interfaces/board.interface';
 import { IUser } from '../../shared/interfaces/user.interface';
@@ -23,6 +24,7 @@ export class Dashboard implements OnInit {
   private taskService = inject(TaskService);
   private boardService = inject(BoardService);
   private userService = inject(UserService);
+  weatherService = inject(WeatherService);
 
   tasks = signal<Task[]>([]);
   boards = signal<Board[]>([]);
@@ -43,6 +45,8 @@ export class Dashboard implements OnInit {
   }
 
   ngOnInit(): void {
+    this.weatherService.loadWeather();
+
     if (this.role === 'admin') {
       this.userService.getUsers().subscribe(u => this.users.set(u));
       this.boardService.getBoards().subscribe(b => this.boards.set(b));
