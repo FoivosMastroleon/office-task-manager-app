@@ -7,7 +7,10 @@ import { BoardService } from '../../../shared/services/board.service';
 import { TaskService } from '../../../shared/services/task.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Board } from '../../../shared/interfaces/board.interface';
+import { IUser } from '../../../shared/interfaces/user.interface';
 import { Task } from '../../../shared/interfaces/task.interface';
+import { UserService } from '../../../shared/services/user.service';
+
 
 @Component({
   selector: 'app-board-detail',
@@ -20,9 +23,14 @@ export class BoardDetail implements OnInit {
   private boardService = inject(BoardService);
   private taskService = inject(TaskService);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   board = signal<Board | null>(null);
   tasks = signal<Task[]>([]);
+  allUsers = signal<IUser[]>([]);
+  showMembers = signal(false);
+  selectedUserId = signal('');
+
   activeColumn = signal<'todo' | 'working_on_it' | 'done' | null>(null);
 
   newTitle = '';
@@ -30,6 +38,15 @@ export class BoardDetail implements OnInit {
   newAssignedTo = '';
   newDueDate = '';
 
+  get availableUsers() {
+    const members = this.board()?.members.map(m => m.id) ?? [];
+    return this.allUsers().filter(u => !members.includes(u.id));
+  }
+
+  get canManage() {
+  const role = this.authService.loggedInUser()?.role;
+  return role === 'admin' || role === 'manager';
+  }
   get todoTasks() { return this.tasks().filter(t => t.status === 'todo'); }
   get inProgressTasks() { return this.tasks().filter(t => t.status === 'working_on_it'); }
   get doneTasks() { return this.tasks().filter(t => t.status === 'done'); }
@@ -38,6 +55,8 @@ export class BoardDetail implements OnInit {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.boardService.getBoardById(id).subscribe(b => this.board.set(b));
     this.taskService.getTasksByBoardId(id).subscribe(t => this.tasks.set(t));
+    this.userService.getUsers().subscribe(u => this.allUsers.set(u));
+
   }
 
   openForm(column: 'todo' | 'working_on_it' | 'done') {
@@ -77,5 +96,21 @@ export class BoardDetail implements OnInit {
     );
   });
 }
+    addMember() {
+    const boardId = this.board()!.id;
+    const userId = this.selectedUserId();
+    if (!userId) return;
+    this.boardService.addMember(boardId, userId).subscribe(updated => {
+      this.board.set(updated);
+      this.selectedUserId.set('');
+    });
+  }
+
+  removeMember(userId: string) {
+    const boardId = this.board()!.id;
+    this.boardService.removeMember(boardId, userId).subscribe(updated => {
+      this.board.set(updated);
+    });
+  }
 
 }

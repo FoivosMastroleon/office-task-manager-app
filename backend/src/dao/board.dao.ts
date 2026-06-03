@@ -1,4 +1,5 @@
 import Board, { IBoard } from '../models/board.model';
+import { Types } from 'mongoose';
 
 export const findAll = async (): Promise<IBoard[]> => {
     return await Board.find({ isActive: true}).populate({ path: 'owner', select: '-password', populate: { path: 'role', select: 'role description' } })
@@ -54,7 +55,7 @@ export const addMemberToBoard = async (boardId: string, memberId: string): Promi
 };
 
 export const removeMemberFromBoard = async (boardId: string, memberId: string): Promise<IBoard | null> => {
-    return await Board.findByIdAndUpdate(boardId, { $pull: { members: memberId } }, { new: true })
+    return await Board.findByIdAndUpdate(boardId, { $pull: { members: new Types.ObjectId(memberId) } } as any, { new: true })
     .populate({ path: 'owner', select: '-password', populate: { path: 'role', select: 'role description' } })
 .populate({ path: 'members', select: '-password', populate: { path: 'role', select: 'role description' } }).lean().exec();
 };
