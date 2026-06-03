@@ -5,12 +5,86 @@
 }
 
 .boards-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 24px;
 
   h1 {
     font-size: 24px;
     font-weight: 700;
     color: #1e1e1e;
+  }
+
+  button {
+    padding: 8px 16px;
+    background: #4d6ef5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover { background: #3a5be0; }
+  }
+}
+
+.board-form {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e1e1e;
+    margin: 0;
+  }
+
+  input, textarea {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+
+    &:focus { outline: none; border-color: #4d6ef5; }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 8px;
+
+    button:first-child {
+      padding: 8px 16px;
+      background: #4d6ef5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover { background: #3a5be0; }
+    }
+
+    button:last-child {
+      padding: 8px 16px;
+      background: transparent;
+      color: #6d6e6f;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover { background: #f5f5f0; }
+    }
   }
 }
 
@@ -64,6 +138,31 @@
 .board-footer {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.board-actions {
+  display: flex;
+  gap: 6px;
+
+  button {
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: transparent;
+    color: #6d6e6f;
+
+    &:hover { background: #f5f5f0; }
+
+    &:last-child:hover {
+      background: #fff0f0;
+      color: #e53935;
+      border-color: #e53935;
+    }
+  }
 }
 
 .members-count {

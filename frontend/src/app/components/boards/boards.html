@@ -3,7 +3,29 @@
 
   <div class="boards-header">
     <h1>Boards</h1>
+    @if (canManage) {
+      <button (click)="openCreate()"> Create New Board</button>
+    }
   </div>
+
+  @if (showForm()) {
+    <div class="board-form">
+      <h3>{{ editingBoard() ? 'Edit Board' : 'New Board' }}</h3>
+      <input
+        type="text"
+        [(ngModel)]="formTitle"
+        placeholder="Board Title"
+      />
+      <textarea
+        [(ngModel)]="formDescription"
+        placeholder="Board Description"
+      ></textarea>
+      <div class="form-actions">
+        <button (click)="submitForm()">{{ editingBoard() ? 'Save' : 'Create' }}</button>
+        <button (click)="cancelForm()">Cancel</button>
+      </div>
+    </div>
+  }
 
   @if (boards().length === 0) {
     <p class="empty-state">No boards found.</p>
@@ -19,6 +41,12 @@
             <p class="board-description">{{ board.description }}</p>
           }
           <div class="board-footer">
+            @if (canManage) {
+              <div class="board-actions">
+                <button (click)="openEdit(board); $event.stopPropagation()">Edit</button>
+                <button (click)="deleteBoard(board.id); $event.stopPropagation()">Delete</button>
+              </div>
+            }
             <span class="members-count">
               {{ board.members.length }} member{{ board.members.length !== 1 ? 's' : '' }}
             </span>

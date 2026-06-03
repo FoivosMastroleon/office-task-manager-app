@@ -16,6 +16,9 @@
             {{ member.firstname?.charAt(0) }}
           </span>
         }
+        @if (canManage) {
+          <span class="member-avatar add-member-btn" title="Manage Members">+</span>
+        }
       </div>
     </div>
 @if (showMembers()) {
