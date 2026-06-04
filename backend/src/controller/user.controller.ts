@@ -106,6 +106,7 @@ export const getUserSummaries = async (req: Request, res: Response, next: NextFu
 export const restoreUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
+        if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid id' });
         const user = await userService.restoreUser(id);
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.status(200).json(mapUserToResponse(user));

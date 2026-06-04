@@ -1,5 +1,6 @@
-import { HttpHandler, HttpInterceptor, HttpRequest, } from '@angular/common/http';
+import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -7,7 +8,7 @@ import { Injectable } from '@angular/core';
 export class AuthInterceptorService implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler) {
         const authToken = localStorage.getItem('access_token');
-        if (!authToken || !req.url.startsWith('http://localhost')) {
+        if (!authToken || !req.url.startsWith(environment.apiURL)) {
             return next.handle(req);
         }
         const authRequest = req.clone({

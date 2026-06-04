@@ -2,6 +2,7 @@
 
 
 export const environment = {
-  apiURL: 'render....com',
-  googleClientId: 'YOUR_GOOGLE_CLIENT_ID_HERE'
+  apiURL: 'https://your-backend.onrender.com/api',
+  googleClientId: '546628013569-nfpc9sdnp98jopfhvddsm9g1qd9iankb.apps.googleusercontent.com',
+  weatherApiKey: '185089a2d1b1d3accfb5e6b753c3da1e'
 };

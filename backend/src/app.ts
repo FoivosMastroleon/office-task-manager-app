@@ -8,6 +8,7 @@ import taskRoutes from './routes/task.routes';
 import roleRoutes from './routes/role.routes';
 import { setupSwagger } from './swagger';
 import cors from 'cors';
+import { errorHandler } from './middlewares/error.middleware';
 
 dotenv.config();
 
@@ -29,5 +30,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/boards', boardRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/roles', roleRoutes);
+
+app.use(errorHandler);
 
 export default app;
