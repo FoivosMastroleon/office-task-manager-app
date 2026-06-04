@@ -11,7 +11,7 @@
     @if (weatherService.loading()) {
       <span class="weather-loading">Loading weather...</span>
     } @else if (weatherService.error()) {
-      <span class="weather-error">{{ weatherService.error() }}</span>
+      <span class="weather-error" title="{{ weatherService.error() }}">📍 Enable location access to see weather</span>
     } @else if (weatherService.weather()) {
       <img [src]="'https://openweathermap.org/img/wn/' + weatherService.weather()!.icon + '.png'" alt="weather icon" />
       <span class="weather-temp">{{ weatherService.weather()!.temp }}°C</span>
