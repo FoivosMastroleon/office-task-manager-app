@@ -100,6 +100,7 @@
       <div class="stat-card">
         <h3>In Progress</h3>
         <p class="stat-number">{{ getTaskCount('working_on_it') }}</p>
+        <a routerLink="/tasks" [queryParams]="{filter: 'active'}">View Tasks</a>
       </div>
       <div class="stat-card">
         <h3>Done</h3>

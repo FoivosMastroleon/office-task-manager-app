@@ -6,8 +6,10 @@ import { Navbar } from '../navbar/navbar';
 import { TaskService } from '../../shared/services/task.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { UserService } from '../../shared/services/user.service';
+import { BoardService } from '../../shared/services/board.service';
 import { Task } from '../../shared/interfaces/task.interface';
-import { IUser } from '../../shared/interfaces/user.interface';
+import { IUserSummary } from '../../shared/interfaces/user.interface';
+import { Board } from '../../shared/interfaces/board.interface';
 
 @Component({
   selector: 'app-tasks',
@@ -19,18 +21,27 @@ export class Tasks implements OnInit {
   private taskService = inject(TaskService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private boardService = inject(BoardService);
   private route = inject(ActivatedRoute);
 
   tasks = signal<Task[]>([]);
-  allUsers = signal<IUser[]>([]);
+  allUsers = signal<IUserSummary[]>([]);
+  allBoards = signal<Board[]>([]);
   activeFilter = signal<'all' | 'active' | 'done'>('all');
   showInactive = signal(false);
   editingTask = signal<Task | null>(null);
+  showCreateForm = signal(false);
 
   editTitle = '';
   editDescription = '';
   editAssignedTo = '';
   editDueDate = '';
+
+  newTitle = '';
+  newDescription = '';
+  newAssignedTo = '';
+  newDueDate = '';
+  newBoard = '';
 
   get user() { return this.authService.loggedInUser(); }
   get role() { return this.user?.role; }
@@ -49,6 +60,7 @@ export class Tasks implements OnInit {
   ngOnInit(): void {
     const filter = this.route.snapshot.queryParamMap.get('filter');
     if (filter === 'done') this.activeFilter.set('done');
+    if (filter === 'active') this.activeFilter.set('active');
 
     if (this.role === 'employee') {
       this.taskService.getTasksByAssignee(this.user!.userId).subscribe(t => this.tasks.set(t));
@@ -58,12 +70,41 @@ export class Tasks implements OnInit {
       } else {
         this.taskService.getTasks().subscribe(t => this.tasks.set(t));
       }
-      this.userService.getUsers().subscribe(u => this.allUsers.set(u));
+      this.userService.getUserSummaries().subscribe(u => this.allUsers.set(u));
+      this.boardService.getBoards().subscribe(b => this.allBoards.set(b));
     }
   }
 
   setFilter(f: 'all' | 'active' | 'done') {
     this.activeFilter.set(f);
+  }
+
+  openCreateForm() {
+    this.showCreateForm.set(true);
+    this.newTitle = '';
+    this.newDescription = '';
+    this.newAssignedTo = '';
+    this.newDueDate = '';
+    this.newBoard = '';
+  }
+
+  cancelCreateForm() {
+    this.showCreateForm.set(false);
+  }
+
+  submitCreateTask() {
+    if (!this.newTitle || !this.newBoard || !this.newAssignedTo) return;
+    this.taskService.createTask({
+      title: this.newTitle,
+      description: this.newDescription,
+      board: this.newBoard,
+      assignedTo: this.newAssignedTo,
+      assignedBy: this.user!.userId,
+      dueDate: this.newDueDate ? new Date(this.newDueDate) : undefined,
+    } as any).subscribe(task => {
+      this.tasks.update(ts => [...ts, task]);
+      this.showCreateForm.set(false);
+    });
   }
 
   openEditTask(task: Task) {

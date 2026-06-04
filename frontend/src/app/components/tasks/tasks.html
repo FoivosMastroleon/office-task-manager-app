@@ -10,12 +10,42 @@
         <button [class.active]="activeFilter() === 'done'" (click)="setFilter('done')">Done</button>
       </div>
     }
-    @if (role === 'admin') {
-      <button class="toggle-inactive" (click)="showInactive.set(!showInactive())">
-        {{ showInactive() ? '← Active Tasks' : 'Inactive Tasks' }}
-      </button>
-    }
+    <div class="header-actions">
+      @if (canManage) {
+        <button class="btn-create-task" (click)="openCreateForm()">+ New Task</button>
+      }
+      @if (role === 'admin') {
+        <button class="toggle-inactive" (click)="showInactive.set(!showInactive())">
+          {{ showInactive() ? '← Active Tasks' : 'Inactive Tasks' }}
+        </button>
+      }
+    </div>
   </div>
+
+  @if (showCreateForm()) {
+    <div class="create-task-form">
+      <h3>New Task</h3>
+      <input [(ngModel)]="newTitle" placeholder="Title *" />
+      <input [(ngModel)]="newDescription" placeholder="Description (optional)" />
+      <select [(ngModel)]="newBoard">
+        <option value="">Select board *</option>
+        @for (board of allBoards(); track board.id) {
+          <option [value]="board.id">{{ board.title }}</option>
+        }
+      </select>
+      <select [(ngModel)]="newAssignedTo">
+        <option value="">Assign to *</option>
+        @for (user of allUsers(); track user.id) {
+          <option [value]="user.id">{{ user.firstname }} {{ user.lastname }}</option>
+        }
+      </select>
+      <input type="date" [(ngModel)]="newDueDate" />
+      <div class="form-actions">
+        <button class="btn-save" (click)="submitCreateTask()">Create</button>
+        <button class="btn-cancel" (click)="cancelCreateForm()">Cancel</button>
+      </div>
+    </div>
+  }
 
   @if (filteredTasks.length === 0) {
     <p class="empty-state">No tasks found.</p>
