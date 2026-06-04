@@ -7,7 +7,7 @@ import { BoardService } from '../../../shared/services/board.service';
 import { TaskService } from '../../../shared/services/task.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Board } from '../../../shared/interfaces/board.interface';
-import { IUser } from '../../../shared/interfaces/user.interface';
+import { IUserSummary } from '../../../shared/interfaces/user.interface';
 import { Task } from '../../../shared/interfaces/task.interface';
 import { UserService } from '../../../shared/services/user.service';
 
@@ -27,7 +27,7 @@ export class BoardDetail implements OnInit {
 
   board = signal<Board | null>(null);
   tasks = signal<Task[]>([]);
-  allUsers = signal<IUser[]>([]);
+  allUsers = signal<IUserSummary[]>([]);
   showMembers = signal(false);
   selectedUserId = signal('');
 
@@ -68,7 +68,7 @@ export class BoardDetail implements OnInit {
   }
 });
 
-    this.userService.getUsers().subscribe(u => this.allUsers.set(u));
+    this.userService.getUserSummaries().subscribe(u => this.allUsers.set(u));
 
   }
 
