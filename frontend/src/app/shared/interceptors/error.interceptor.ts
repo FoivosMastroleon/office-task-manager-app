@@ -13,8 +13,6 @@ export class ErrorInterceptor implements HttpInterceptor {
             catchError((error: HttpErrorResponse) => {
                 if (error.status === 401) {
                     this.authService.logout();
-                } else if (error.status === 403) {
-                    this.router.navigate(['/dashboard']);
                 } else if (error.status >= 500) {
                     console.error('Server error:', error.message);
                 }
