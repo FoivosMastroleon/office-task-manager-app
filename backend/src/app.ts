@@ -13,9 +13,11 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: ['http://localhost:4200']  // Angular dev server
-}));
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:4200'];
+
+app.use(cors({ origin: allowedOrigins }));
 
 setupSwagger(app);
 

@@ -19,8 +19,12 @@ export const findAllIncludingInactive = async () => {
     return await taskDAO.findAllIncludingInactive();
 }
 
-export const findById = async (id: string) => {
-    return await taskDAO.findById(id);
+export const findById = async (id: string, requestingUserId?: string, role?: string) => {
+    const task = await taskDAO.findById(id);
+    if (!task) return null;
+    if (!role || role === 'admin' || role === 'manager') return task;
+    const assignedTo = (task.assignedTo as any)._id?.toString() ?? task.assignedTo.toString();
+    return assignedTo === requestingUserId ? task : null;
 }
 
 export const createTask = async (payload: CreateTaskDTO) => {
@@ -65,7 +69,16 @@ export const restoreTask = async (id: string) => {
     return await taskDAO.restoreTask(id);
 };
 
-export const findByBoard = async (boardId: string) => {
+export const findByBoard = async (boardId: string, requestingUserId?: string, role?: string) => {
+    if (!role || role === 'admin' || role === 'manager') {
+        return await taskDAO.findByBoard(boardId);
+    }
+    const board = await boardDAO.findById(boardId);
+    if (!board) return null;
+    const ownerId = (board.owner as any)._id?.toString() ?? board.owner.toString();
+    const isMember = ownerId === requestingUserId ||
+        board.members.some((m: any) => (m._id?.toString() ?? m.toString()) === requestingUserId);
+    if (!isMember) return null;
     return await taskDAO.findByBoard(boardId);
 };
 

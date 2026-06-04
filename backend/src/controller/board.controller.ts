@@ -16,8 +16,9 @@ export const getBoards = async (req: Request, res: Response, next: NextFunction)
 export const getBoardById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
+        const { userId, role } = req.user;
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Board id' });
-        const board = await boardService.findById(id);
+        const board = await boardService.findById(id, userId, role);
         if (!board) {
             return res.status(404).json({ message: 'Board not found' });
         }

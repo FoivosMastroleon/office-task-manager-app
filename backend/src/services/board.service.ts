@@ -16,8 +16,14 @@ export const findAllIncludingInactive = async () => {
     return await boardDAO.findAllIncludingInactive();
 }
 
-export const findById = async (id: string) => {
-    return await boardDAO.findById(id);
+export const findById = async (id: string, requestingUserId?: string, role?: string) => {
+    const board = await boardDAO.findById(id);
+    if (!board) return null;
+    if (!role || role === 'admin' || role === 'manager') return board;
+    const ownerId = (board.owner as any)._id?.toString() ?? board.owner.toString();
+    const isMember = ownerId === requestingUserId ||
+        board.members.some((m: any) => (m._id?.toString() ?? m.toString()) === requestingUserId);
+    return isMember ? board : null;
 }
 
 export const createBoard = async (payload: CreateBoardDTO, ownerId: string) => {
