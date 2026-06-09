@@ -15,27 +15,48 @@
       <div class="user-form">
         <h3>Create User</h3>
         <div class="form-grid">
-          <input [(ngModel)]="formFirstname" placeholder="First name" />
-          <input [(ngModel)]="formLastname" placeholder="Last name" />
-          <input [(ngModel)]="formEmail" placeholder="Email *" type="email" />
-          <select [(ngModel)]="formRole">
-            <option value="">Select role *</option>
-            @for (r of roles(); track r._id) {
-              <option [value]="r._id">{{ r.role }}</option>
+          <div class="form-field">
+            <input [(ngModel)]="formFirstname" placeholder="First name *" />
+            @if (createUserErrors().firstname) {
+              <span class="field-error">{{ createUserErrors().firstname }}</span>
             }
-          </select>
-          <select [(ngModel)]="formDepartment">
-            <option value="">Select department</option>
-            @for (d of departments; track d) {
-              <option [value]="d">{{ d }}</option>
+          </div>
+          <div class="form-field">
+            <input [(ngModel)]="formLastname" placeholder="Last name" />
+          </div>
+          <div class="form-field">
+            <input [(ngModel)]="formEmail" placeholder="Email *" type="email" />
+            @if (createUserErrors().email) {
+              <span class="field-error">{{ createUserErrors().email }}</span>
             }
-          </select>
-          <select [(ngModel)]="formPosition">
-            <option value="">Select position</option>
-            @for (p of positions; track p) {
-              <option [value]="p">{{ p }}</option>
+          </div>
+          <div class="form-field">
+            <select [(ngModel)]="formRole">
+              <option value="">Select role *</option>
+              @for (r of roles(); track r._id) {
+                <option [value]="r._id">{{ r.role }}</option>
+              }
+            </select>
+            @if (createUserErrors().role) {
+              <span class="field-error">{{ createUserErrors().role }}</span>
             }
-          </select>
+          </div>
+          <div class="form-field">
+            <select [(ngModel)]="formDepartment">
+              <option value="">Select department</option>
+              @for (d of departments; track d) {
+                <option [value]="d">{{ d }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-field">
+            <select [(ngModel)]="formPosition">
+              <option value="">Select position</option>
+              @for (p of positions; track p) {
+                <option [value]="p">{{ p }}</option>
+              }
+            </select>
+          </div>
         </div>
         <div class="form-actions">
           <button class="btn-save" (click)="submitForm()">Create</button>
@@ -81,10 +102,8 @@
               <td>
                 <select [(ngModel)]="editRole">
                   @for (r of roles(); track r._id) {
-                    @if (r.role !== 'admin') {
-                      <option [value]="r._id">{{ r.role }}</option>
-                    }
-                  }
+                    <option [value]="r._id">{{ r.role }}</option>
+}
                 </select>
               </td>
               <td>{{ user.isActive ? 'Yes' : 'No' }}</td>

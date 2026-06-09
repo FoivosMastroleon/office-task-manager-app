@@ -43,6 +43,9 @@ export class Tasks implements OnInit {
   newDueDate = '';
   newBoard = '';
 
+  createErrors = signal<{ title?: string; description?: string; board?: string; assignedTo?: string }>({});
+  editErrors = signal<{ title?: string; description?: string }>({});
+
   get user() { return this.authService.loggedInUser(); }
   get role() { return this.user?.role; }
   get canManage() { return this.role === 'admin' || this.role === 'manager'; }
@@ -90,10 +93,36 @@ export class Tasks implements OnInit {
 
   cancelCreateForm() {
     this.showCreateForm.set(false);
+    this.createErrors.set({});
   }
 
   submitCreateTask() {
-    if (!this.newTitle || !this.newBoard || !this.newAssignedTo) return;
+    const errors: { title?: string; description?: string; board?: string; assignedTo?: string } = {};
+
+    if (!this.newTitle.trim()) {
+      errors.title = 'Title is required';
+    } else if (this.newTitle.length < 10 || this.newTitle.length > 60) {
+      errors.title = 'Title must be between 10 and 60 characters';
+    }
+
+    if (this.newDescription && this.newDescription.length < 10) {
+      errors.description = 'Description must be at least 10 characters';
+    }
+
+    if (!this.newBoard) {
+      errors.board = 'Please select a board';
+    }
+
+    if (!this.newAssignedTo) {
+      errors.assignedTo = 'Please assign to a user';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.createErrors.set(errors);
+      return;
+    }
+
+    this.createErrors.set({});
     this.taskService.createTask({
       title: this.newTitle,
       description: this.newDescription,
@@ -117,11 +146,31 @@ export class Tasks implements OnInit {
 
   cancelEditTask() {
     this.editingTask.set(null);
+    this.editErrors.set({});
   }
 
   submitEditTask() {
     const task = this.editingTask();
     if (!task) return;
+
+    const errors: { title?: string; description?: string } = {};
+
+    if (!this.editTitle.trim()) {
+      errors.title = 'Title is required';
+    } else if (this.editTitle.length < 10 || this.editTitle.length > 60) {
+      errors.title = 'Title must be between 10 and 60 characters';
+    }
+
+    if (this.editDescription && this.editDescription.length < 10) {
+      errors.description = 'Description must be at least 10 characters';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.editErrors.set(errors);
+      return;
+    }
+
+    this.editErrors.set({});
     this.taskService.updateTask(task.id, {
       title: this.editTitle,
       description: this.editDescription,

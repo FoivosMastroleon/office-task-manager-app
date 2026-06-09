@@ -26,19 +26,31 @@
     <div class="create-task-form">
       <h3>New Task</h3>
       <input [(ngModel)]="newTitle" placeholder="Title *" />
+      @if (createErrors().title) {
+        <span class="field-error">{{ createErrors().title }}</span>
+      }
       <input [(ngModel)]="newDescription" placeholder="Description (optional)" />
+      @if (createErrors().description) {
+        <span class="field-error">{{ createErrors().description }}</span>
+      }
       <select [(ngModel)]="newBoard">
         <option value="">Select board *</option>
         @for (board of allBoards(); track board.id) {
           <option [value]="board.id">{{ board.title }}</option>
         }
       </select>
+      @if (createErrors().board) {
+        <span class="field-error">{{ createErrors().board }}</span>
+      }
       <select [(ngModel)]="newAssignedTo">
         <option value="">Assign to *</option>
         @for (user of allUsers(); track user.id) {
           <option [value]="user.id">{{ user.firstname }} {{ user.lastname }}</option>
         }
       </select>
+      @if (createErrors().assignedTo) {
+        <span class="field-error">{{ createErrors().assignedTo }}</span>
+      }
       <input type="date" [(ngModel)]="newDueDate" />
       <div class="form-actions">
         <button class="btn-save" (click)="submitCreateTask()">Create</button>
@@ -58,7 +70,13 @@
         @if (editingTask()?.id === task.id) {
           <div class="edit-form">
             <input [(ngModel)]="editTitle" placeholder="Title" />
+            @if (editErrors().title) {
+              <span class="field-error">{{ editErrors().title }}</span>
+            }
             <input [(ngModel)]="editDescription" placeholder="Description" />
+            @if (editErrors().description) {
+              <span class="field-error">{{ editErrors().description }}</span>
+            }
             @if (canManage) {
               <select [(ngModel)]="editAssignedTo">
                 <option value="">Assign to...</option>

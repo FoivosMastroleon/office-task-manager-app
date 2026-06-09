@@ -20,10 +20,16 @@
         [(ngModel)]="formTitle"
         placeholder="Board Title"
       />
+      @if (boardErrors().title) {
+        <span class="field-error">{{ boardErrors().title }}</span>
+      }
       <textarea
         [(ngModel)]="formDescription"
         placeholder="Board Description"
       ></textarea>
+      @if (boardErrors().description) {
+        <span class="field-error">{{ boardErrors().description }}</span>
+      }
       <div class="form-actions">
         <button (click)="submitForm()">{{ editingBoard() ? 'Save' : 'Create' }}</button>
         <button (click)="cancelForm()">Cancel</button>

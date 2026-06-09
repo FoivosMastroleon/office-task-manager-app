@@ -35,6 +35,8 @@ export class Users implements OnInit {
   editDepartment = '';
   editPosition = '';
 
+  createUserErrors = signal<{ firstname?: string; email?: string; role?: string }>({});
+
   get filteredUsers() {
     return this.users().filter(u => this.activeFilter() === 'active' ? u.isActive : !u.isActive);
   }
@@ -68,6 +70,7 @@ export class Users implements OnInit {
 
   cancelForm() {
     this.showForm.set(false);
+    this.createUserErrors.set({});
   }
 
   openEdit(user: IUser) {
@@ -107,6 +110,28 @@ export class Users implements OnInit {
   }
 
   submitForm() {
+    const errors: { firstname?: string; email?: string; role?: string } = {};
+
+    if (!this.formFirstname.trim()) {
+      errors.firstname = 'First name is required';
+    }
+
+    if (!this.formEmail.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formEmail)) {
+      errors.email = 'Please enter a valid email';
+    }
+
+    if (!this.formRole) {
+      errors.role = 'Please select a role';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.createUserErrors.set(errors);
+      return;
+    }
+
+    this.createUserErrors.set({});
     this.userService.createUser({
       email: this.formEmail,
       firstname: this.formFirstname,

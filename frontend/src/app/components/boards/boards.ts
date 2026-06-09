@@ -21,6 +21,7 @@ export class Boards implements OnInit {
   showForm = signal(false);
   editingBoard = signal<Board | null>(null);
   activeFilter = signal<'active' | 'inactive'>('active');
+  boardErrors = signal<{ title?: string; description?: string }>({});
 
   formTitle = '';
   formDescription = '';
@@ -59,9 +60,29 @@ export class Boards implements OnInit {
 
   cancelForm() {
     this.showForm.set(false);
+    this.boardErrors.set({});
   }
 
   submitForm() {
+    const errors: { title?: string; description?: string } = {};
+
+    if (!this.formTitle.trim()) {
+      errors.title = 'Title is required';
+    } else if (this.formTitle.length < 8 || this.formTitle.length > 50) {
+      errors.title = 'Title must be between 8 and 50 characters';
+    }
+
+    if (this.formDescription && this.formDescription.length < 10) {
+      errors.description = 'Description must be at least 10 characters';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.boardErrors.set(errors);
+      return;
+    }
+
+    this.boardErrors.set({});
+
     const payload = { title: this.formTitle, description: this.formDescription };
     const editing = this.editingBoard();
 
