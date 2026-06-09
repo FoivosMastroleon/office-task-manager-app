@@ -30,6 +30,12 @@ export class Dashboard implements OnInit {
   boards = signal<Board[]>([]);
   users = signal<IUser[]>([]);
   editingTask = signal<Task | null>(null);
+  showDone = signal(false);
+
+  get visibleTasks() {
+    if (this.showDone()) return this.tasks();
+    return this.tasks().filter(t => t.status !== 'done');
+  }
 
   editTitle = '';
   editDescription = '';

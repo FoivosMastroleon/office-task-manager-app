@@ -21,7 +21,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #f06a6a;
+  background: #9333ea;
   color: white;
   display: flex;
   align-items: center;
@@ -117,7 +117,7 @@
     border-radius: 5px;
     font-size: 13px;
     outline: none;
-    &:focus { border-color: #4573d2; }
+    &:focus { border-color: #7c3aed; }
   }
 }
 
@@ -128,13 +128,13 @@
 
 .btn-add {
   padding: 7px 16px;
-  background: #4573d2;
+  background: #7c3aed;
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 13px;
   cursor: pointer;
-  &:hover { background: #3560c0; }
+  &:hover { background: #6d28d9; }
 }
 
 .btn-cancel {

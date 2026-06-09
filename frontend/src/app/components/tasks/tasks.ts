@@ -27,7 +27,7 @@ export class Tasks implements OnInit {
   tasks = signal<Task[]>([]);
   allUsers = signal<IUserSummary[]>([]);
   allBoards = signal<Board[]>([]);
-  activeFilter = signal<'all' | 'active' | 'done'>('all');
+  activeFilter = signal<'all' | 'active' | 'done'>('active');
   showInactive = signal(false);
   editingTask = signal<Task | null>(null);
   showCreateForm = signal(false);

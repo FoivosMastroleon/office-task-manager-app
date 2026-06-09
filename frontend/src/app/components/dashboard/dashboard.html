@@ -46,12 +46,17 @@
       </div>
     </div>
     <div class="task-list-section">
-      <h2>All Tasks</h2>
-      @if (tasks().length === 0) {
+      <div class="section-header">
+        <h2>Tasks</h2>
+        <button class="btn-toggle-done" (click)="showDone.set(!showDone())">
+          {{ showDone() ? 'Hide Done' : 'Show Done' }}
+        </button>
+      </div>
+      @if (visibleTasks.length === 0) {
         <p class="empty">No tasks found.</p>
       }
       <div class="task-list">
-        @for (task of tasks(); track task.id) {
+        @for (task of visibleTasks; track task.id) {
           <div class="task-card status-{{ task.status }}">
             @if (editingTask()?.id === task.id) {
               <div class="dash-edit-form">
@@ -109,12 +114,17 @@
       </div>
     </div>
     <div class="task-list-section">
-      <h2>Board Tasks</h2>
-      @if (tasks().length === 0) {
+      <div class="section-header">
+        <h2>Board Tasks</h2>
+        <button class="btn-toggle-done" (click)="showDone.set(!showDone())">
+          {{ showDone() ? 'Hide Done' : 'Show Done' }}
+        </button>
+      </div>
+      @if (visibleTasks.length === 0) {
         <p class="empty">No tasks found.</p>
       }
       <div class="task-list">
-        @for (task of tasks(); track task.id) {
+        @for (task of visibleTasks; track task.id) {
           <div class="task-card status-{{ task.status }}">
             @if (editingTask()?.id === task.id) {
               <div class="dash-edit-form">
@@ -150,12 +160,17 @@
   <!-- EMPLOYEE VIEW -->
   @if (role === 'employee') {
     <div class="employee-section">
-      <h2>My Tasks</h2>
-      @if (tasks().length === 0) {
+      <div class="section-header">
+        <h2>My Tasks</h2>
+        <button class="btn-toggle-done" (click)="showDone.set(!showDone())">
+          {{ showDone() ? 'Hide Done' : 'Show Done' }}
+        </button>
+      </div>
+      @if (visibleTasks.length === 0) {
         <p class="empty">No tasks assigned to you.</p>
       }
       <div class="task-list">
-        @for (task of tasks(); track task.id) {
+        @for (task of visibleTasks; track task.id) {
           <div class="task-card status-{{ task.status }}">
             <h4>{{ task.title }}</h4>
             <p>{{ task.description }}</p>
