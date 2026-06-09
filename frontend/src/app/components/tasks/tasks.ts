@@ -36,6 +36,7 @@ export class Tasks implements OnInit {
   editDescription = '';
   editAssignedTo = '';
   editDueDate = '';
+  editStatus = '';
 
   newTitle = '';
   newDescription = '';
@@ -51,13 +52,14 @@ export class Tasks implements OnInit {
   get canManage() { return this.role === 'admin' || this.role === 'manager'; }
 
   get filteredTasks() {
-    const base = this.showInactive()
-      ? this.tasks().filter(t => !t.isActive)
-      : this.tasks().filter(t => t.isActive);
+    if (this.showInactive()) {
+      return this.tasks().filter(t => t.isActive === false);
+    }
+    const active = this.tasks().filter(t => t.isActive !== false);
     const f = this.activeFilter();
-    if (f === 'active') return base.filter(t => t.status !== 'done');
-    if (f === 'done') return base.filter(t => t.status === 'done');
-    return base;
+    if (f === 'active') return active.filter(t => t.status !== 'done');
+    if (f === 'done') return active.filter(t => t.status === 'done');
+    return [...active, ...this.tasks().filter(t => t.isActive === false)];
   }
 
   ngOnInit(): void {
@@ -142,6 +144,7 @@ export class Tasks implements OnInit {
     this.editDescription = task.description ?? '';
     this.editAssignedTo = task.assignedTo?.id ?? '';
     this.editDueDate = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
+    this.editStatus = task.status;
   }
 
   cancelEditTask() {
@@ -175,10 +178,23 @@ export class Tasks implements OnInit {
       title: this.editTitle,
       description: this.editDescription,
       assignedTo: this.editAssignedTo,
-      dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined
+      dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined,
+      status: this.editStatus
     } as any).subscribe(updated => {
       this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
       this.editingTask.set(null);
+    });
+  }
+
+  deleteTask(id: string) {
+    this.taskService.deleteTask(id).subscribe(updated => {
+      this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
+    });
+  }
+
+  reopenTask(id: string) {
+    this.taskService.updateTaskStatus(id, 'todo').subscribe(updated => {
+      this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
     });
   }
 

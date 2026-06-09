@@ -3,7 +3,7 @@ import * as taskController from '../controller/task.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 import { hasAdminRole, hasAdminOrManagerRole } from '../middlewares/role.middleware';
 import { validate } from '../middlewares/validate.middleware';
-import { createTaskSchema, updateTaskStatusSchema } from '../validators/task.validator';
+import { createTaskSchema, updateTaskSchema, updateTaskStatusSchema } from '../validators/task.validator';
 
 const router = Router();
 
@@ -147,7 +147,7 @@ router.post('/', authenticate, hasAdminOrManagerRole, validate(createTaskSchema)
  *      404:
  *        description: Task not found
  */
-router.put('/:id', authenticate, hasAdminOrManagerRole, validate(createTaskSchema), taskController.updateTask);
+router.put('/:id', authenticate, hasAdminOrManagerRole, validate(updateTaskSchema), taskController.updateTask);
 
 /**
  * @openapi

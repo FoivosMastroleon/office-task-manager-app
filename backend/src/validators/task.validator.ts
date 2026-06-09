@@ -11,7 +11,9 @@ export const createTaskSchema = z.object({
     dueDate: z.string().optional()
 });
 
-export const updateTaskSchema = createTaskSchema.partial();
+export const updateTaskSchema = createTaskSchema.extend({
+    status: taskStatusSchema
+}).partial();
 
 export const updateTaskStatusSchema = z.object({ 
     status: taskStatusSchema

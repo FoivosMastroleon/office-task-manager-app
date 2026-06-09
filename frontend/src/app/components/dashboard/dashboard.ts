@@ -41,6 +41,7 @@ export class Dashboard implements OnInit {
   editDescription = '';
   editAssignedTo = '';
   editDueDate = '';
+  editStatus = '';
 
   get user() {
     return this.authService.loggedInUser();
@@ -73,12 +74,25 @@ export class Dashboard implements OnInit {
     return this.tasks().filter(t => t.status === status).length;
   }
 
+  getStatusLabel(status: string): string {
+    if (status === 'working_on_it') return 'In Progress';
+    if (status === 'done') return 'Done';
+    return 'To Do';
+  }
+
   openEditTask(task: Task) {
     this.editingTask.set(task);
     this.editTitle = task.title;
     this.editDescription = task.description ?? '';
     this.editAssignedTo = task.assignedTo?.id ?? '';
     this.editDueDate = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
+    this.editStatus = task.status;
+  }
+
+  deleteTask(id: string) {
+    this.taskService.deleteTask(id).subscribe(() => {
+      this.tasks.update(ts => ts.filter(t => t.id !== id));
+    });
   }
 
   cancelEditTask() {
@@ -92,7 +106,8 @@ export class Dashboard implements OnInit {
       title: this.editTitle,
       description: this.editDescription,
       assignedTo: this.editAssignedTo,
-      dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined
+      dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined,
+      status: this.editStatus
     } as any).subscribe(updated => {
       this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
       this.editingTask.set(null);

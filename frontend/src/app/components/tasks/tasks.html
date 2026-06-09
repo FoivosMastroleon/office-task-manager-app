@@ -69,22 +69,34 @@
 
         @if (editingTask()?.id === task.id) {
           <div class="edit-form">
+            <label class="form-label">Title</label>
             <input [(ngModel)]="editTitle" placeholder="Title" />
             @if (editErrors().title) {
               <span class="field-error">{{ editErrors().title }}</span>
             }
-            <input [(ngModel)]="editDescription" placeholder="Description" />
+            <label class="form-label">Description</label>
+            <input [(ngModel)]="editDescription" placeholder="Description (optional)" />
             @if (editErrors().description) {
               <span class="field-error">{{ editErrors().description }}</span>
             }
             @if (canManage) {
+              <label class="form-label">Assigned To</label>
               <select [(ngModel)]="editAssignedTo">
                 <option value="">Assign to...</option>
                 @for (user of allUsers(); track user.id) {
                   <option [value]="user.id">{{ user.firstname }} {{ user.lastname }}</option>
                 }
               </select>
+              @if (editingTask()?.isActive !== false) {
+                <label class="form-label">Status</label>
+                <select [(ngModel)]="editStatus">
+                  <option value="todo">To Do</option>
+                  <option value="working_on_it">In Progress</option>
+                  <option value="done">Done</option>
+                </select>
+              }
             }
+            <label class="form-label">Due Date</label>
             <input type="date" [(ngModel)]="editDueDate" />
             <div class="edit-form-actions">
               <button class="btn-save" (click)="submitEditTask()">Save</button>
@@ -110,10 +122,15 @@
               <a class="board-link" [routerLink]="['/boards', task.board.id]">{{ task.board.title }}</a>
             }
             @if (canManage) {
-              @if (task.isActive) {
-                <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+              @if (task.isActive === false) {
+                <button class="restore-btn" (click)="restoreTask(task.id)">↺ Restore</button>
+              } @else if (task.status === 'done') {
+                <button class="restore-btn" (click)="reopenTask(task.id)">↩ Reopen</button>
               } @else {
-                <button class="restore-btn" (click)="restoreTask(task.id)">↺</button>
+                <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+                @if (role === 'admin') {
+                  <button class="delete-btn" (click)="deleteTask(task.id)">✕</button>
+                }
               }
             }
           </div>

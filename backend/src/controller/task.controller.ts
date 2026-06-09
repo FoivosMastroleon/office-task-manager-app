@@ -63,8 +63,8 @@ export const deleteTask = async (req: Request, res: Response, next: NextFunction
     try {
         const id = req.params.id;
         if (typeof id !== 'string') return res.status(400).json({ message: 'Invalid Task id' });
-        await taskService.softDeleteTask(id);
-        res.status(200).json({ message: 'Task deleted successfully' });
+        const deletedTask = await taskService.softDeleteTask(id);
+        res.status(200).json(mapTaskToResponse(deletedTask));
     } catch (error) {
         next(error);
     }
