@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
@@ -31,6 +31,10 @@ export class Tasks implements OnInit {
   showInactive = signal(false);
   editingTask = signal<Task | null>(null);
   showCreateForm = signal(false);
+  selectedTask = signal<Task | null>(null);
+
+  @HostListener('document:keydown.escape')
+  onEsc() { this.selectedTask.set(null); }
 
   editTitle = '';
   editDescription = '';
@@ -196,6 +200,15 @@ export class Tasks implements OnInit {
     this.taskService.updateTaskStatus(id, 'todo').subscribe(updated => {
       this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
     });
+  }
+
+  openTaskDetail(task: Task) {
+    if (this.editingTask()?.id === task.id) return;
+    this.selectedTask.set(task);
+  }
+
+  closeTaskDetail() {
+    this.selectedTask.set(null);
   }
 
   restoreTask(id: string) {

@@ -27,7 +27,7 @@
 
     <ul>
       @for (member of board()!.members; track member.id) {
-        <li>
+        <li [attr.data-initial]="member.firstname?.charAt(0)">
           {{ member.firstname }} {{ member.lastname }}
           @if (canManage) {
             <button (click)="removeMember(member.id)">Remove</button>

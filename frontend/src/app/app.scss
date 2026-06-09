@@ -1,3 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+}
+
 .app-footer {
   background: #1e1e1e;
   color: #aaa;
@@ -17,4 +27,11 @@
   }
 
   .footer-year { font-size: 12px; color: #666; }
+
+  @media (max-width: 600px) {
+    padding: 16px;
+    font-size: 12px;
+
+    p { margin: 6px 0; }
+  }
 }
