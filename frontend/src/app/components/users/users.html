@@ -76,8 +76,17 @@
                     <option [value]="p">{{ p }}</option>
                   }
                 </select>
+                
               </td>
-              <td><span class="role-badge role-{{ user.role.role }}">{{ user.role.role }}</span></td>
+              <td>
+                <select [(ngModel)]="editRole">
+                  @for (r of roles(); track r._id) {
+                    @if (r.role !== 'admin') {
+                      <option [value]="r._id">{{ r.role }}</option>
+                    }
+                  }
+                </select>
+              </td>
               <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
               <td class="actions-cell">
                 <button class="btn-save-sm" (click)="submitEdit()">Save</button>

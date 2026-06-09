@@ -31,6 +31,7 @@ export class Users implements OnInit {
   formDepartment = '';
   formPosition = '';
 
+  editRole = '';
   editDepartment = '';
   editPosition = '';
 
@@ -71,6 +72,7 @@ export class Users implements OnInit {
 
   openEdit(user: IUser) {
     this.editingUser.set(user);
+    this.editRole = user.role.id;
     this.editDepartment = user.department ?? '';
     this.editPosition = user.position ?? '';
   }
@@ -85,6 +87,7 @@ export class Users implements OnInit {
     this.userService.updateUser(user.id, {
       department: this.editDepartment as any,
       position: this.editPosition as any,
+      role: this.editRole,
     }).subscribe(updated => {
       this.users.update(us => us.map(u => u.id === updated.id ? updated : u));
       this.editingUser.set(null);
