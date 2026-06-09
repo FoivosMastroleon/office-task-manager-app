@@ -84,14 +84,24 @@
                   </div>
                 </div>
               } @else {
-                <h4>{{ task.title }}</h4>
-                @if (task.description) { <p>{{ task.description }}</p> }
-                <div class="task-footer">
-                  @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
-                  @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
-                  <button class="status-btn start" (click)="updateStatus(task.id, 'working_on_it')">▶ Start</button>
+                <h4 class="card-title">{{ task.title }}</h4>
+                @if (task.description) { <p class="card-description">{{ task.description }}</p> }
+                @if (task.assignedTo) {
+                  <div class="task-meta-row">
+                    <span class="task-meta-label">Assigned to</span>
+                    <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+                  </div>
+                }
+                @if (task.dueDate) {
+                  <div class="task-meta-row">
+                    <span class="task-meta-label">Due</span>
+                    <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+                  </div>
+                }
+                <div class="card-actions">
+                  <button class="card-start-btn" (click)="updateStatus(task.id, 'working_on_it')">▶ Start</button>
                   @if (canManage) {
-                    <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+                    <button class="card-edit-btn" (click)="openEditTask(task)">✎ Edit</button>
                   }
                 </div>
               }
@@ -148,14 +158,24 @@
                   </div>
                 </div>
               } @else {
-                <h4>{{ task.title }}</h4>
-                @if (task.description) { <p>{{ task.description }}</p> }
-                <div class="task-footer">
-                  @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
-                  @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
-                  <button class="status-btn done-btn" (click)="updateStatus(task.id, 'done')">✓ Done</button>
+                <h4 class="card-title">{{ task.title }}</h4>
+                @if (task.description) { <p class="card-description">{{ task.description }}</p> }
+                @if (task.assignedTo) {
+                  <div class="task-meta-row">
+                    <span class="task-meta-label">Assigned to</span>
+                    <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+                  </div>
+                }
+                @if (task.dueDate) {
+                  <div class="task-meta-row">
+                    <span class="task-meta-label">Due</span>
+                    <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+                  </div>
+                }
+                <div class="card-actions">
+                  <button class="card-done-btn" (click)="updateStatus(task.id, 'done')">✓ Mark as Done</button>
                   @if (canManage) {
-                    <button class="edit-btn" (click)="openEditTask(task)">✎</button>
+                    <button class="card-edit-btn" (click)="openEditTask(task)">✎ Edit</button>
                   }
                 </div>
               }
@@ -190,15 +210,25 @@
                   </div>
                 </div>
               } @else {
-                <h4>{{ task.title }}</h4>
-                @if (task.description) { <p>{{ task.description }}</p> }
-                <div class="task-footer">
-                  @if (task.assignedTo) { <span class="assignee">{{ task.assignedTo.firstname }}</span> }
-                  @if (task.dueDate) { <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span> }
-                  @if (canManage) {
-                    <button class="edit-btn" (click)="openEditTask(task)">✎</button>
-                  }
-                </div>
+                <h4 class="card-title">{{ task.title }}</h4>
+                @if (task.description) { <p class="card-description">{{ task.description }}</p> }
+                @if (task.assignedTo) {
+                  <div class="task-meta-row">
+                    <span class="task-meta-label">Assigned to</span>
+                    <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+                  </div>
+                }
+                @if (task.dueDate) {
+                  <div class="task-meta-row">
+                    <span class="task-meta-label">Due</span>
+                    <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+                  </div>
+                }
+                @if (canManage) {
+                  <div class="card-actions">
+                    <button class="card-edit-btn" (click)="openEditTask(task)">✎ Edit</button>
+                  </div>
+                }
               }
             </div>
           }

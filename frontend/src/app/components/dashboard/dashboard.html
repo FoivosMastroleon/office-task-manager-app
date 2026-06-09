@@ -91,14 +91,32 @@
                   <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
                 }
               </div>
-              <h4>{{ task.title }}</h4>
-              @if (task.description) { <p>{{ task.description }}</p> }
-              <div class="dash-card-actions">
+              <h4 class="card-title">{{ task.title }}</h4>
+              @if (task.description) { <p class="card-description">{{ task.description }}</p> }
+              @if (task.assignedTo) {
+                <div class="task-meta-row">
+                  <span class="task-meta-label">Assigned to</span>
+                  <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+                </div>
+              }
+              @if (task.board) {
+                <div class="task-board-row">
+                  <span class="task-meta-label">Board</span>
+                  <span class="board-tag">{{ task.board.title }}</span>
+                </div>
+              }
+              <div class="card-actions">
                 @if (task.status === 'done') {
-                  <button class="restore-btn" (click)="reopenTask(task.id); $event.stopPropagation()">↩ Reopen</button>
+                  <button class="card-restore-btn" (click)="reopenTask(task.id); $event.stopPropagation()">↩ Reopen</button>
                 } @else {
-                  <button class="dash-edit-btn" (click)="openEditTask(task); $event.stopPropagation()">✎</button>
-                  <button class="dash-delete-btn" (click)="deleteTask(task.id); $event.stopPropagation()">✕</button>
+                  @if (task.status === 'todo') {
+                    <button class="card-start-btn" (click)="startTask(task.id); $event.stopPropagation()">▶ Start</button>
+                  }
+                  @if (task.status === 'working_on_it') {
+                    <button class="card-done-btn" (click)="markAsDone(task.id); $event.stopPropagation()">✓ Mark as Done</button>
+                  }
+                  <button class="card-edit-btn" (click)="openEditTask(task); $event.stopPropagation()">✎ Edit</button>
+                  <button class="card-delete-btn" (click)="deleteTask(task.id); $event.stopPropagation()">✕</button>
                 }
               </div>
             }
@@ -178,13 +196,31 @@
                   <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
                 }
               </div>
-              <h4>{{ task.title }}</h4>
-              @if (task.description) { <p>{{ task.description }}</p> }
-              <div class="dash-card-actions">
+              <h4 class="card-title">{{ task.title }}</h4>
+              @if (task.description) { <p class="card-description">{{ task.description }}</p> }
+              @if (task.assignedTo) {
+                <div class="task-meta-row">
+                  <span class="task-meta-label">Assigned to</span>
+                  <span class="assignee">{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</span>
+                </div>
+              }
+              @if (task.board) {
+                <div class="task-board-row">
+                  <span class="task-meta-label">Board</span>
+                  <span class="board-tag">{{ task.board.title }}</span>
+                </div>
+              }
+              <div class="card-actions">
                 @if (task.status === 'done') {
-                  <button class="restore-btn" (click)="reopenTask(task.id); $event.stopPropagation()">↩ Reopen</button>
+                  <button class="card-restore-btn" (click)="reopenTask(task.id); $event.stopPropagation()">↩ Reopen</button>
                 } @else {
-                  <button class="dash-edit-btn" (click)="openEditTask(task); $event.stopPropagation()">✎</button>
+                  @if (task.status === 'todo' && task.assignedTo?.id === user?.userId) {
+                    <button class="card-start-btn" (click)="startTask(task.id); $event.stopPropagation()">▶ Start</button>
+                  }
+                  @if (task.status === 'working_on_it' && task.assignedTo?.id === user?.userId) {
+                    <button class="card-done-btn" (click)="markAsDone(task.id); $event.stopPropagation()">✓ Mark as Done</button>
+                  }
+                  <button class="card-edit-btn" (click)="openEditTask(task); $event.stopPropagation()">✎ Edit</button>
                 }
               </div>
             }
@@ -215,8 +251,22 @@
                 <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
               }
             </div>
-            <h4>{{ task.title }}</h4>
-            @if (task.description) { <p>{{ task.description }}</p> }
+            <h4 class="card-title">{{ task.title }}</h4>
+            @if (task.description) { <p class="card-description">{{ task.description }}</p> }
+            @if (task.board) {
+              <div class="task-board-row">
+                <span class="task-meta-label">Board</span>
+                <span class="board-tag">{{ task.board.title }}</span>
+              </div>
+            }
+            <div class="card-actions">
+              @if (task.status === 'todo') {
+                <button class="card-start-btn" (click)="startTask(task.id); $event.stopPropagation()">▶ Start</button>
+              }
+              @if (task.status === 'working_on_it') {
+                <button class="card-done-btn" (click)="markAsDone(task.id); $event.stopPropagation()">✓ Mark as Done</button>
+              }
+            </div>
           </div>
         }
       </div>
@@ -286,6 +336,16 @@
               <button class="btn-modal-delete" (click)="deleteTask(selectedTask()!.id); closeTaskDetail()">✕ Delete</button>
             }
           }
+        </div>
+      }
+      @if (selectedTask()!.status === 'todo' && (role === 'admin' || selectedTask()!.assignedTo?.id === user?.userId)) {
+        <div class="modal-actions">
+          <button class="btn-modal-start" (click)="startTask(selectedTask()!.id)">▶ Start</button>
+        </div>
+      }
+      @if (selectedTask()!.status === 'working_on_it' && (role === 'admin' || selectedTask()!.assignedTo?.id === user?.userId)) {
+        <div class="modal-actions">
+          <button class="btn-modal-done" (click)="markAsDone(selectedTask()!.id)">✓ Mark as Done</button>
         </div>
       }
 

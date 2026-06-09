@@ -202,6 +202,20 @@ export class Tasks implements OnInit {
     });
   }
 
+  startTask(id: string) {
+    this.taskService.updateTaskStatus(id, 'working_on_it').subscribe(updated => {
+      this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
+      if (this.selectedTask()) this.selectedTask.set(updated);
+    });
+  }
+
+  markAsDone(id: string) {
+    this.taskService.updateTaskStatus(id, 'done').subscribe(updated => {
+      this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
+      if (this.selectedTask()) this.selectedTask.set(updated);
+    });
+  }
+
   openTaskDetail(task: Task) {
     if (this.editingTask()?.id === task.id) return;
     this.selectedTask.set(task);

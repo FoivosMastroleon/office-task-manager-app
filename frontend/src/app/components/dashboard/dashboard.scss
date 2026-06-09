@@ -155,9 +155,9 @@
   &.status-working_on_it { border-left-color: #818cf8; }
   &.status-done { border-left-color: #34d399; }
 
-  h4 { margin: 0 0 8px; color: #333; }
-  p { margin: 0 0 8px; color: #666; font-size: 13px; }
+  .card-title { font-size: 14px; font-weight: 600; color: #111827; margin: 8px 0 2px; line-height: 1.4; letter-spacing: -0.1px; }
   .due-date { color: #e53935; font-size: 12px; }
+  .assignee { font-size: 12px; font-weight: 500; color: #4b5563; }
 }
 
 .status-badge {
@@ -171,33 +171,6 @@
 
 .empty { color: #999; font-style: italic; }
 
-.dash-card-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.dash-edit-btn {
-  padding: 3px 8px;
-  background: transparent;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  color: #888;
-  &:hover { background: #f0f0f0; color: #333; }
-}
-
-.dash-delete-btn {
-  padding: 3px 8px;
-  background: transparent;
-  border: 1px solid #fca5a5;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  color: #ef4444;
-  &:hover { background: #fef2f2; }
-}
 
 .form-label {
   font-size: 11px;
