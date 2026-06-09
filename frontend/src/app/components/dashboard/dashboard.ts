@@ -33,7 +33,7 @@ export class Dashboard implements OnInit {
   showDone = signal(false);
 
   get visibleTasks() {
-    if (this.showDone()) return this.tasks();
+    if (this.showDone()) return this.tasks().filter(t => t.status === 'done');
     return this.tasks().filter(t => t.status !== 'done');
   }
 
@@ -92,6 +92,12 @@ export class Dashboard implements OnInit {
   deleteTask(id: string) {
     this.taskService.deleteTask(id).subscribe(() => {
       this.tasks.update(ts => ts.filter(t => t.id !== id));
+    });
+  }
+
+  reopenTask(id: string) {
+    this.taskService.updateTaskStatus(id, 'todo').subscribe(updated => {
+      this.tasks.update(ts => ts.map(t => t.id === updated.id ? updated : t));
     });
   }
 

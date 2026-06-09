@@ -60,19 +60,24 @@
           <div class="task-card status-{{ task.status }}">
             @if (editingTask()?.id === task.id) {
               <div class="dash-edit-form">
+                <label class="form-label">Title</label>
                 <input [(ngModel)]="editTitle" placeholder="Title" />
-                <input [(ngModel)]="editDescription" placeholder="Description" />
+                <label class="form-label">Description</label>
+                <input [(ngModel)]="editDescription" placeholder="Description (optional)" />
+                <label class="form-label">Assigned To</label>
                 <select [(ngModel)]="editAssignedTo">
                   <option value="">Assign to...</option>
                   @for (u of users(); track u.id) {
                     <option [value]="u.id">{{ u.firstname }} {{ u.lastname }}</option>
                   }
                 </select>
+                <label class="form-label">Status</label>
                 <select [(ngModel)]="editStatus">
                   <option value="todo">To Do</option>
                   <option value="working_on_it">In Progress</option>
                   <option value="done">Done</option>
                 </select>
+                <label class="form-label">Due Date</label>
                 <input type="date" [(ngModel)]="editDueDate" />
                 <div class="dash-edit-actions">
                   <button (click)="submitEditTask()">Save</button>
@@ -80,15 +85,21 @@
                 </div>
               </div>
             } @else {
+              <div class="task-card-header">
+                <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
+                @if (task.dueDate) {
+                  <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+                }
+              </div>
               <h4>{{ task.title }}</h4>
-              <p>{{ task.description }}</p>
-              <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
-              @if (task.dueDate) {
-                <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
-              }
+              @if (task.description) { <p>{{ task.description }}</p> }
               <div class="dash-card-actions">
-                <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
-                <button class="dash-delete-btn" (click)="deleteTask(task.id)">✕</button>
+                @if (task.status === 'done') {
+                  <button class="restore-btn" (click)="reopenTask(task.id)">↩ Reopen</button>
+                } @else {
+                  <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
+                  <button class="dash-delete-btn" (click)="deleteTask(task.id)">✕</button>
+                }
               </div>
             }
           </div>
@@ -136,19 +147,24 @@
           <div class="task-card status-{{ task.status }}">
             @if (editingTask()?.id === task.id) {
               <div class="dash-edit-form">
+                <label class="form-label">Title</label>
                 <input [(ngModel)]="editTitle" placeholder="Title" />
-                <input [(ngModel)]="editDescription" placeholder="Description" />
+                <label class="form-label">Description</label>
+                <input [(ngModel)]="editDescription" placeholder="Description (optional)" />
+                <label class="form-label">Assigned To</label>
                 <select [(ngModel)]="editAssignedTo">
                   <option value="">Assign to...</option>
                   @for (u of users(); track u.id) {
                     <option [value]="u.id">{{ u.firstname }} {{ u.lastname }}</option>
                   }
                 </select>
+                <label class="form-label">Status</label>
                 <select [(ngModel)]="editStatus">
                   <option value="todo">To Do</option>
                   <option value="working_on_it">In Progress</option>
                   <option value="done">Done</option>
                 </select>
+                <label class="form-label">Due Date</label>
                 <input type="date" [(ngModel)]="editDueDate" />
                 <div class="dash-edit-actions">
                   <button (click)="submitEditTask()">Save</button>
@@ -156,13 +172,21 @@
                 </div>
               </div>
             } @else {
+              <div class="task-card-header">
+                <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
+                @if (task.dueDate) {
+                  <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+                }
+              </div>
               <h4>{{ task.title }}</h4>
-              <p>{{ task.description }}</p>
-              <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
-              @if (task.dueDate) {
-                <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
-              }
-              <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
+              @if (task.description) { <p>{{ task.description }}</p> }
+              <div class="dash-card-actions">
+                @if (task.status === 'done') {
+                  <button class="restore-btn" (click)="reopenTask(task.id)">↩ Reopen</button>
+                } @else {
+                  <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
+                }
+              </div>
             }
           </div>
         }
@@ -185,12 +209,14 @@
       <div class="task-list">
         @for (task of visibleTasks; track task.id) {
           <div class="task-card status-{{ task.status }}">
+            <div class="task-card-header">
+              <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
+              @if (task.dueDate) {
+                <span class="due-date">{{ task.dueDate | date:'mediumDate' }}</span>
+              }
+            </div>
             <h4>{{ task.title }}</h4>
-            <p>{{ task.description }}</p>
-            <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
-            @if (task.dueDate) {
-              <p class="due-date">Due: {{ task.dueDate | date:'mediumDate' }}</p>
-            }
+            @if (task.description) { <p>{{ task.description }}</p> }
           </div>
         }
       </div>
