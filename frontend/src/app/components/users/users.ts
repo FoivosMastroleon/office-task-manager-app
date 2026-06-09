@@ -87,7 +87,7 @@ export class Users implements OnInit {
     this.userService.updateUser(user.id, {
       department: this.editDepartment as any,
       position: this.editPosition as any,
-      role: this.editRole,
+      role: this.editRole as any,
     }).subscribe(updated => {
       this.users.update(us => us.map(u => u.id === updated.id ? updated : u));
       this.editingUser.set(null);
