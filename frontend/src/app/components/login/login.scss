@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #f3f0ff 0%, #e9e4f5 100%);
+  background: linear-gradient(135deg, #f0edf8 0%, #e8f4fd 60%, #ede9f7 100%);
 }
 
 .login-card {
@@ -14,7 +14,7 @@
   padding: 48px;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(109, 40, 217, 0.12);
+  box-shadow: 0 4px 24px rgba(102, 126, 234, 0.12);
   min-width: 360px;
 
   h2 {
@@ -36,8 +36,8 @@
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #7c3aed;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+  border: 3px solid #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .demo-login {
@@ -63,9 +63,9 @@
     color: #333;
 
     &:hover {
-      background: #f5f0ff;
-      border-color: #7c3aed;
-      color: #7c3aed;
+      background: #eef2ff;
+      border-color: #667eea;
+      color: #667eea;
     }
   }
 }

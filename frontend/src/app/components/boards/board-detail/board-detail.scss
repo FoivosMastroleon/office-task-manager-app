@@ -1,6 +1,6 @@
 .board-detail-container {
   padding: 32px 40px;
-  background-color: #f5f5f0;
+  background-color: transparent;
   min-height: 100vh;
 }
 
@@ -21,7 +21,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #9333ea;
+  background: #818cf8;
   color: white;
   display: flex;
   align-items: center;
@@ -54,9 +54,9 @@
   font-weight: 600;
   font-size: 13px;
 
-  &.todo { background: #e8e8e8; color: #555; }
-  &.in-progress { background: #ffd700; color: #7a5c00; }
-  &.done { background: #b7f5b7; color: #1a6b1a; }
+  &.todo { background: #f1f5f9; color: #64748b; }
+  &.in-progress { background: #e0e7ff; color: #4338ca; }
+  &.done { background: #d1fae5; color: #065f46; }
 
   .count {
     background: rgba(0,0,0,0.1);
@@ -117,7 +117,7 @@
     border-radius: 5px;
     font-size: 13px;
     outline: none;
-    &:focus { border-color: #7c3aed; }
+    &:focus { border-color: #667eea; }
   }
 }
 
@@ -128,13 +128,13 @@
 
 .btn-add {
   padding: 7px 16px;
-  background: #7c3aed;
+  background: #667eea;
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 13px;
   cursor: pointer;
-  &:hover { background: #6d28d9; }
+  &:hover { background: #4f46e5; }
 }
 
 .btn-cancel {
@@ -162,8 +162,8 @@
   font-size: 11px;
   cursor: pointer;
 
-  &.start { background: #ffd700; color: #7a5c00; }
-  &.done-btn { background: #b7f5b7; color: #1a6b1a; }
+  &.start { background: #e0e7ff; color: #4338ca; }
+  &.done-btn { background: #d1fae5; color: #065f46; }
 }
 
 .done-card { opacity: 0.75; }
