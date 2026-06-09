@@ -57,7 +57,7 @@
       }
       <div class="task-list">
         @for (task of visibleTasks; track task.id) {
-          <div class="task-card status-{{ task.status }}">
+          <div class="task-card status-{{ task.status }}" (click)="openTaskDetail(task)">
             @if (editingTask()?.id === task.id) {
               <div class="dash-edit-form">
                 <label class="form-label">Title</label>
@@ -80,8 +80,8 @@
                 <label class="form-label">Due Date</label>
                 <input type="date" [(ngModel)]="editDueDate" />
                 <div class="dash-edit-actions">
-                  <button (click)="submitEditTask()">Save</button>
-                  <button (click)="cancelEditTask()">Cancel</button>
+                  <button (click)="submitEditTask(); $event.stopPropagation()">Save</button>
+                  <button (click)="cancelEditTask(); $event.stopPropagation()">Cancel</button>
                 </div>
               </div>
             } @else {
@@ -95,10 +95,10 @@
               @if (task.description) { <p>{{ task.description }}</p> }
               <div class="dash-card-actions">
                 @if (task.status === 'done') {
-                  <button class="restore-btn" (click)="reopenTask(task.id)">↩ Reopen</button>
+                  <button class="restore-btn" (click)="reopenTask(task.id); $event.stopPropagation()">↩ Reopen</button>
                 } @else {
-                  <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
-                  <button class="dash-delete-btn" (click)="deleteTask(task.id)">✕</button>
+                  <button class="dash-edit-btn" (click)="openEditTask(task); $event.stopPropagation()">✎</button>
+                  <button class="dash-delete-btn" (click)="deleteTask(task.id); $event.stopPropagation()">✕</button>
                 }
               </div>
             }
@@ -144,7 +144,7 @@
       }
       <div class="task-list">
         @for (task of visibleTasks; track task.id) {
-          <div class="task-card status-{{ task.status }}">
+          <div class="task-card status-{{ task.status }}" (click)="openTaskDetail(task)">
             @if (editingTask()?.id === task.id) {
               <div class="dash-edit-form">
                 <label class="form-label">Title</label>
@@ -167,8 +167,8 @@
                 <label class="form-label">Due Date</label>
                 <input type="date" [(ngModel)]="editDueDate" />
                 <div class="dash-edit-actions">
-                  <button (click)="submitEditTask()">Save</button>
-                  <button (click)="cancelEditTask()">Cancel</button>
+                  <button (click)="submitEditTask(); $event.stopPropagation()">Save</button>
+                  <button (click)="cancelEditTask(); $event.stopPropagation()">Cancel</button>
                 </div>
               </div>
             } @else {
@@ -182,9 +182,9 @@
               @if (task.description) { <p>{{ task.description }}</p> }
               <div class="dash-card-actions">
                 @if (task.status === 'done') {
-                  <button class="restore-btn" (click)="reopenTask(task.id)">↩ Reopen</button>
+                  <button class="restore-btn" (click)="reopenTask(task.id); $event.stopPropagation()">↩ Reopen</button>
                 } @else {
-                  <button class="dash-edit-btn" (click)="openEditTask(task)">✎</button>
+                  <button class="dash-edit-btn" (click)="openEditTask(task); $event.stopPropagation()">✎</button>
                 }
               </div>
             }
@@ -208,7 +208,7 @@
       }
       <div class="task-list">
         @for (task of visibleTasks; track task.id) {
-          <div class="task-card status-{{ task.status }}">
+          <div class="task-card status-{{ task.status }}" (click)="openTaskDetail(task)">
             <div class="task-card-header">
               <span class="status-badge status-{{ task.status }}">{{ getStatusLabel(task.status) }}</span>
               @if (task.dueDate) {
@@ -223,3 +223,72 @@
     </div>
   }
 </div>
+
+@if (selectedTask()) {
+  <div class="task-modal-overlay" (click)="closeTaskDetail()">
+    <div class="task-modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-top">
+        <div class="modal-badges">
+          <span class="status-badge status-{{ selectedTask()!.status }}">{{ getStatusLabel(selectedTask()!.status) }}</span>
+        </div>
+        <button class="modal-close-btn" (click)="closeTaskDetail()">✕</button>
+      </div>
+
+      <h2 class="modal-title">{{ selectedTask()!.title }}</h2>
+
+      @if (selectedTask()!.description) {
+        <p class="modal-description">{{ selectedTask()!.description }}</p>
+      }
+
+      <div class="modal-meta">
+        @if (selectedTask()!.dueDate) {
+          <div class="meta-row">
+            <span class="meta-label">Due Date</span>
+            <span class="meta-value">{{ selectedTask()!.dueDate | date:'mediumDate' }}</span>
+          </div>
+        }
+        @if (selectedTask()!.board) {
+          <div class="meta-row">
+            <span class="meta-label">Board</span>
+            <a class="meta-value board-link" [routerLink]="['/boards', selectedTask()!.board.id]" (click)="closeTaskDetail()">{{ selectedTask()!.board.title }}</a>
+          </div>
+        }
+        @if (selectedTask()!.assignedTo) {
+          <div class="meta-row">
+            <span class="meta-label">Assigned to</span>
+            <span class="meta-value">{{ selectedTask()!.assignedTo!.firstname }} {{ selectedTask()!.assignedTo!.lastname }}</span>
+          </div>
+        }
+        @if (selectedTask()!.assignedBy) {
+          <div class="meta-row">
+            <span class="meta-label">Assigned by</span>
+            <span class="meta-value">{{ selectedTask()!.assignedBy!.firstname }} {{ selectedTask()!.assignedBy!.lastname }}</span>
+          </div>
+        }
+        <div class="meta-row">
+          <span class="meta-label">Created</span>
+          <span class="meta-value">{{ selectedTask()!.createdAt | date:'mediumDate' }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Last updated</span>
+          <span class="meta-value">{{ selectedTask()!.updatedAt | date:'mediumDate' }}</span>
+        </div>
+      </div>
+
+      @if (canManage) {
+        <div class="modal-actions">
+          @if (selectedTask()!.status === 'done') {
+            <button class="btn-modal-restore" (click)="reopenTask(selectedTask()!.id); closeTaskDetail()">↩ Reopen</button>
+          } @else {
+            <button class="btn-modal-edit" (click)="openEditTask(selectedTask()!); closeTaskDetail()">✎ Edit</button>
+            @if (role === 'admin') {
+              <button class="btn-modal-delete" (click)="deleteTask(selectedTask()!.id); closeTaskDetail()">✕ Delete</button>
+            }
+          }
+        </div>
+      }
+
+    </div>
+  </div>
+}

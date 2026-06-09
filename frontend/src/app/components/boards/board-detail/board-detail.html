@@ -10,15 +10,21 @@
           <p class="board-description">{{ board()!.description }}</p>
         }
       </div>
-      <div class="members" (click)="showMembers.set(!showMembers())" style="cursor:pointer">
-        @for (member of board()!.members; track member.id) {
-          <span class="member-avatar" [title]="(member.firstname ?? '') + ' ' + (member.lastname ?? '')">
-            {{ member.firstname?.charAt(0) }}
-          </span>
-        }
-        @if (canManage) {
-          <span class="member-avatar add-member-btn" title="Manage Members">+</span>
-        }
+      <div class="members-toggle" (click)="showMembers.set(!showMembers())">
+        <span class="members-label">
+          Members
+          <span class="members-chevron" [class.open]="showMembers()">›</span>
+        </span>
+        <div class="members">
+          @for (member of board()!.members; track member.id) {
+            <span class="member-avatar" [title]="(member.firstname ?? '') + ' ' + (member.lastname ?? '')">
+              {{ member.firstname?.charAt(0) }}
+            </span>
+          }
+          @if (canManage) {
+            <span class="member-avatar add-member-btn" title="Manage Members">+</span>
+          }
+        </div>
       </div>
     </div>
 @if (showMembers()) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -30,6 +30,7 @@ export class Dashboard implements OnInit {
   boards = signal<Board[]>([]);
   users = signal<IUser[]>([]);
   editingTask = signal<Task | null>(null);
+  selectedTask = signal<Task | null>(null);
   showDone = signal(false);
 
   get visibleTasks() {
@@ -43,6 +44,9 @@ export class Dashboard implements OnInit {
   editDueDate = '';
   editStatus = '';
 
+  @HostListener('document:keydown.escape')
+  onEsc() { this.selectedTask.set(null); }
+
   get user() {
     return this.authService.loggedInUser();
   }
@@ -50,6 +54,8 @@ export class Dashboard implements OnInit {
   get role() {
     return this.user?.role;
   }
+
+  get canManage() { return this.role === 'admin' || this.role === 'manager'; }
 
   ngOnInit(): void {
     this.weatherService.loadWeather();
@@ -72,6 +78,15 @@ export class Dashboard implements OnInit {
 
   getTaskCount(status: string): number {
     return this.tasks().filter(t => t.status === status).length;
+  }
+
+  openTaskDetail(task: Task) {
+    if (this.editingTask()?.id === task.id) return;
+    this.selectedTask.set(task);
+  }
+
+  closeTaskDetail() {
+    this.selectedTask.set(null);
   }
 
   getStatusLabel(status: string): string {

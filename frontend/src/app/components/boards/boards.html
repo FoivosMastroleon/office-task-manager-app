@@ -1,14 +1,20 @@
 <app-navbar />
 <div class="boards-container">
 
-  <div class="boards-header">
-    <h1>Boards</h1>
+  <div class="page-header">
+    <div class="page-title-row">
+      <h1>Boards</h1>
+      @if (canManage) {
+        <div class="header-actions">
+          <button class="btn-create-board" (click)="openCreate()">+ New Board</button>
+        </div>
+      }
+    </div>
     @if (canManage) {
-      <div class="filter-buttons">
+      <div class="filter-tabs">
         <button [class.active]="activeFilter() === 'active'" (click)="activeFilter.set('active')">Active</button>
         <button [class.active]="activeFilter() === 'inactive'" (click)="activeFilter.set('inactive')">Inactive</button>
       </div>
-      <button (click)="openCreate()">+ Create New Board</button>
     }
   </div>
 

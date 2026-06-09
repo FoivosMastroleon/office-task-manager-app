@@ -2,13 +2,17 @@
 <div class="users-container">
 
   @if (role === 'admin') {
-    <div class="users-header">
-      <h2>All Users</h2>
-      <div class="filter-buttons">
+    <div class="page-header">
+      <div class="page-title-row">
+        <h2>All Users</h2>
+        <div class="header-actions">
+          <button class="btn-new" (click)="openCreate()">+ New User</button>
+        </div>
+      </div>
+      <div class="filter-tabs">
         <button [class.active]="activeFilter() === 'active'" (click)="activeFilter.set('active')">Active</button>
         <button [class.active]="activeFilter() === 'inactive'" (click)="activeFilter.set('inactive')">Inactive</button>
       </div>
-      <button class="btn-new" (click)="openCreate()">+ New User</button>
     </div>
 
     @if (showForm()) {
