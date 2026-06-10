@@ -232,7 +232,7 @@ export class Tasks implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    if (status === 'working_on_it') return 'In Progress';
+    if (status === 'working_on_it') return 'Working On It';
     if (status === 'done') return 'Done';
     return 'To Do';
   }
