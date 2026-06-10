@@ -144,6 +144,21 @@
 .btn-cancel-sm { color: #888; &:hover { background: #f0f0f0; } }
 .btn-restore-sm { color: #2e7d32; border-color: #2e7d32; &:hover { background: #e8f5e9; } }
 
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .users-container {
+    padding: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .role-badge {
   padding: 3px 10px;
   border-radius: 12px;

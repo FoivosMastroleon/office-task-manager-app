@@ -185,6 +185,43 @@
 
 .done-card { opacity: 0.75; }
 
+.board-add-btn {
+  display: inline-flex;
+  width: auto;
+  margin-bottom: 16px;
+  border-style: solid;
+  background: white;
+  color: #667eea;
+  border-color: #667eea;
+  font-weight: 500;
+  &:hover { background: #eef0ff; color: #4f46e5; }
+}
+
+.board-add-form {
+  max-width: 400px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .board-detail-container {
+    padding: 16px;
+  }
+
+  .board-detail-header {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    .members-toggle {
+      align-items: flex-start;
+    }
+  }
+
+  .kanban-board {
+    grid-template-columns: 1fr;
+  }
+}
+
 .add-member-btn {
   background: rgba(102, 126, 234, 0.12);
   color: #667eea;

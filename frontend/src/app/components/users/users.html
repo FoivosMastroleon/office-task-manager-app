@@ -69,6 +69,7 @@
       </div>
     }
 
+    <div class="table-scroll">
     <table class="users-table">
       <thead>
         <tr>
@@ -137,10 +138,12 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
   @if (role === 'manager') {
     <h2>My Team</h2>
+    <div class="table-scroll">
     <table class="users-table">
       <thead>
         <tr>
@@ -159,6 +162,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
 </div>
