@@ -4,6 +4,8 @@ A full-stack office task management application built with **Angular 21** (front
 
 Developed as the final project for **Coding Factory 10** — Athens University of Economics and Business.
 
+**Live demo:** https://office-task-manager-mcux.onrender.com
+
 ---
 
 ## Tech Stack
