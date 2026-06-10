@@ -2,7 +2,7 @@
 
 A full-stack office task management application built with **Angular 21** (frontend) and **Node.js / Express** (backend), using **MongoDB** as the database.
 
-Developed as the final project for **Coding Factory 10** — Athens University of Economics and Business.
+Developed as the final project for **Coding Factory 9** — Athens University of Economics and Business.
 
 **Live demo:** https://office-task-manager-mcux.onrender.com
 
