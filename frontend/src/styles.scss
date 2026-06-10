@@ -249,6 +249,24 @@ a { color: #667eea; }
   flex-wrap: wrap;
 }
 
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  gap: 8px;
+}
+
+.modal-footer-left {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-footer-right {
+  display: flex;
+  gap: 8px;
+}
+
 .btn-modal-edit {
   padding: 8px 18px;
   background: #667eea;

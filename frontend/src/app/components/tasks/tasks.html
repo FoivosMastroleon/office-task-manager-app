@@ -200,30 +200,30 @@
         </div>
       </div>
 
-      @if (canManage) {
-        <div class="modal-actions">
-          @if (selectedTask()!.isActive === false) {
-            <button class="btn-modal-restore" (click)="restoreTask(selectedTask()!.id); closeTaskDetail()">↺ Restore</button>
-          } @else if (selectedTask()!.status === 'done') {
-            <button class="btn-modal-restore" (click)="reopenTask(selectedTask()!.id); closeTaskDetail()">↩ Reopen</button>
-          } @else {
-            <button class="btn-modal-edit" (click)="openEditTask(selectedTask()!); closeTaskDetail()">✎ Edit</button>
-            @if (role === 'admin') {
-              <button class="btn-modal-delete" (click)="deleteTask(selectedTask()!.id); closeTaskDetail()">✕ Delete</button>
-            }
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          @if (selectedTask()!.status === 'todo' && (role === 'admin' || selectedTask()!.assignedTo?.id === user?.userId)) {
+            <button class="btn-modal-start" (click)="startTask(selectedTask()!.id)">▶ Start</button>
+          }
+          @if (selectedTask()!.status === 'working_on_it' && (role === 'admin' || selectedTask()!.assignedTo?.id === user?.userId)) {
+            <button class="btn-modal-done" (click)="markAsDone(selectedTask()!.id)">✓ Mark as Done</button>
           }
         </div>
-      }
-      @if (selectedTask()!.status === 'todo' && (role === 'admin' || selectedTask()!.assignedTo?.id === user?.userId)) {
-        <div class="modal-actions">
-          <button class="btn-modal-start" (click)="startTask(selectedTask()!.id)">▶ Start</button>
-        </div>
-      }
-      @if (selectedTask()!.status === 'working_on_it' && (role === 'admin' || selectedTask()!.assignedTo?.id === user?.userId)) {
-        <div class="modal-actions">
-          <button class="btn-modal-done" (click)="markAsDone(selectedTask()!.id)">✓ Mark as Done</button>
-        </div>
-      }
+        @if (canManage) {
+          <div class="modal-footer-right">
+            @if (selectedTask()!.isActive === false) {
+              <button class="btn-modal-restore" (click)="restoreTask(selectedTask()!.id); closeTaskDetail()">↺ Restore</button>
+            } @else if (selectedTask()!.status === 'done') {
+              <button class="btn-modal-restore" (click)="reopenTask(selectedTask()!.id); closeTaskDetail()">↩ Reopen</button>
+            } @else {
+              <button class="btn-modal-edit" (click)="openEditTask(selectedTask()!); closeTaskDetail()">✎ Edit</button>
+              @if (role === 'admin') {
+                <button class="btn-modal-delete" (click)="deleteTask(selectedTask()!.id); closeTaskDetail()">✕ Delete</button>
+              }
+            }
+          </div>
+        }
+      </div>
 
     </div>
   </div>
