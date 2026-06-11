@@ -61,6 +61,9 @@ export class Tasks implements OnInit {
     return board ? board.members : [];
   }
 
+  // This getter depends on allBoards, which is only loaded for admin and managers in ngOnInit.
+  // It works correctly as long as the edit form remains behind the canManage guard in the template.
+  // If the guard is removed, the dropdown will appear empty without any error.
   get boardMembersForEdit() {
     const task = this.editingTask();
     if (!task?.board) return [];
@@ -148,6 +151,12 @@ export class Tasks implements OnInit {
     this.createErrors.set({});
     this.taskService.createTask({
       title: this.newTitle,
+
+
+      // The "undefined" was added to ensure that 
+      // optional fields are not sent as empty strings, 
+      // which could cause issues with Zod since 
+      // it rejects empty strings for optional fields.
       description: this.newDescription || undefined,
       board: this.newBoard,
       assignedTo: this.newAssignedTo,

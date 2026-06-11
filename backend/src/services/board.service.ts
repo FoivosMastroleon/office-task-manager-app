@@ -16,6 +16,7 @@ export const findAllIncludingInactive = async () => {
     return await boardDAO.findAllIncludingInactive();
 }
 
+
 export const findById = async (id: string, requestingUserId?: string, role?: string) => {
     const board = await boardDAO.findById(id);
     if (!board) return null;
@@ -23,6 +24,12 @@ export const findById = async (id: string, requestingUserId?: string, role?: str
     const ownerId = (board.owner as any)._id?.toString() ?? board.owner.toString();
     const isMember = ownerId === requestingUserId ||
         board.members.some((m: any) => (m._id?.toString() ?? m.toString()) === requestingUserId);
+
+        
+// Only allow access if the requesting user is the owner or a member of the board.
+// In case of an employee, trying to see a board that they don't belong to, 
+// this will return null, and then, the controller sends a 404 Not Found, 
+// without revealing that the board exists at all.
     return isMember ? board : null;
 }
 
@@ -45,6 +52,9 @@ export const updateBoard = async (id: string, payload: UpdateBoardDTO) => {
     return await boardDAO.updateBoard(id, updateData);
 };
 
+// Soft delete of a board also soft deletes all its tasks,
+// to maintain data integrity and prevent tasks that belong
+// to a deleted board, so the deletion order matters.
 export const softDeleteBoard = async (id: string) => {
     await taskDAO.softDeleteByBoard(id);
     return await boardDAO.softDeleteBoard(id);

@@ -64,6 +64,10 @@ export class BoardDetail implements OnInit {
     this.boardService.getBoardById(id).subscribe(b => this.board.set(b));
     this.taskService.getTasksByBoardId(id).subscribe(t => {
     const user = this.authService.loggedInUser();
+
+  // This if statement ensures that employees only see tasks assigned to them,
+  // while managers and admins see all tasks for the board. If this check is deleted,
+  // then employees would be able to see all tasks on the board.
   if (user?.role === 'employee') {
     this.tasks.set(t.filter(task => task.assignedTo?.id === user.userId));
   } else {
@@ -116,6 +120,11 @@ export class BoardDetail implements OnInit {
 
     this.taskService.createTask({
       title: this.newTitle,
+
+      // The "undefined" was added to ensure that 
+      // optional fields are not sent as empty strings, 
+      // which could cause issues with Zod since 
+      // it rejects empty strings for optional fields.
       description: this.newDescription || undefined,
       board: boardId,
       assignedTo: this.newAssignedTo,

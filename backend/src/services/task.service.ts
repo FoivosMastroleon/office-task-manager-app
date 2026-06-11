@@ -10,6 +10,8 @@ export const findAll = async (userId: string, role: string) => {
     if (role === 'admin' || role === 'manager') {
         return await taskDAO.findAll();
     }
+    // Employees retrieve tasks via getTasksByAssignee in the frontend —
+    // this board-based path is not currently used for the employee role.
     const boards = await boardDAO.findByMember(userId);
     const boardIds = boards.map((b: any) => b._id);
     return await taskDAO.findByBoardIds(boardIds);
@@ -24,9 +26,17 @@ export const findById = async (id: string, requestingUserId?: string, role?: str
     if (!task) return null;
     if (!role || role === 'admin' || role === 'manager') return task;
     const assignedTo = (task.assignedTo as any)._id?.toString() ?? task.assignedTo.toString();
+
+// Only allow access if the requesting user is the assignee of the task.
+// In case of an employee, trying to see a task that is not assigned to them,
+// this will return null, and then, the controller sends a 404 Not Found, 
+// without revealing that the task exists at all.   
     return assignedTo === requestingUserId ? task : null;
 }
 
+
+// Board schema stores owner separately from members — both are valid assignees. 
+// This helper checks if a user is either the owner or a member of the board.
 const isBoardMember = (board: any, userId: string): boolean => {
     const ownerId = (board.owner as any)._id?.toString() ?? board.owner.toString();
     return ownerId === userId ||
@@ -67,13 +77,19 @@ export const updateTask = async (id: string, payload: UpdateTaskDTO) => {
     if (payload.status !== undefined) updateData.status = payload.status;
     if (payload.dueDate !== undefined) updateData.dueDate = payload.dueDate;
     if (payload.board !== undefined) updateData.board = new Types.ObjectId(payload.board);
+
+    // For assignedTo and assignedBy, we need to convert to ObjectId and also validate
+    // board membership if assignedTo or board is changing
     if (payload.assignedTo !== undefined) updateData.assignedTo = new Types.ObjectId(payload.assignedTo);
     if (payload.assignedBy !== undefined) updateData.assignedBy = new Types.ObjectId(payload.assignedBy);
 
+    // Validate when either changes — swapping only the board can make the existing assignee invalid.
     if (payload.assignedTo !== undefined || payload.board !== undefined) {
         const existingTask = await taskDAO.findById(id);
         if (!existingTask) throw new Error('Task not found');
 
+    // The double ?? is to handle cases where the field that comes from Mongoose,
+    //  might already be an ObjectId or a populated object with _id.
         const boardId = payload.board ??
             ((existingTask.board as any)._id?.toString() ?? existingTask.board.toString());
         const assignedToId = payload.assignedTo ??
