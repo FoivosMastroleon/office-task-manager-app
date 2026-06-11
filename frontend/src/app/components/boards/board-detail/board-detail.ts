@@ -43,6 +43,9 @@ export class BoardDetail implements OnInit {
   editAssignedTo = '';
   editDueDate = '';
 
+  createErrors = signal<{ title?: string; description?: string; assignedTo?: string }>({});
+  editErrors = signal<{ title?: string; description?: string }>({});
+
   get availableUsers() {
     const members = this.board()?.members.map(m => m.id) ?? [];
     return this.allUsers().filter(u => !members.includes(u.id));
@@ -82,15 +85,38 @@ export class BoardDetail implements OnInit {
 
   cancelForm() {
     this.activeColumn.set(null);
+    this.createErrors.set({});
   }
 
   submitTask(status: 'todo' | 'working_on_it' | 'done') {
+    const errors: { title?: string; description?: string; assignedTo?: string } = {};
+
+    if (!this.newTitle.trim()) {
+      errors.title = 'Title is required';
+    } else if (this.newTitle.length < 10 || this.newTitle.length > 60) {
+      errors.title = 'Title must be between 10 and 60 characters';
+    }
+
+    if (this.newDescription && this.newDescription.length < 10) {
+      errors.description = 'Description must be at least 10 characters';
+    }
+
+    if (!this.newAssignedTo) {
+      errors.assignedTo = 'Please assign to a user';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.createErrors.set(errors);
+      return;
+    }
+
+    this.createErrors.set({});
     const boardId = this.route.snapshot.paramMap.get('id')!;
     const userId = this.authService.loggedInUser()!.userId;
 
     this.taskService.createTask({
       title: this.newTitle,
-      description: this.newDescription,
+      description: this.newDescription || undefined,
       board: boardId,
       assignedTo: this.newAssignedTo,
       assignedBy: userId,
@@ -136,14 +162,34 @@ export class BoardDetail implements OnInit {
 
   cancelEditTask() {
     this.editingTask.set(null);
+    this.editErrors.set({});
   }
 
   submitEditTask() {
     const task = this.editingTask();
     if (!task) return;
+
+    const errors: { title?: string; description?: string } = {};
+
+    if (!this.editTitle.trim()) {
+      errors.title = 'Title is required';
+    } else if (this.editTitle.length < 10 || this.editTitle.length > 60) {
+      errors.title = 'Title must be between 10 and 60 characters';
+    }
+
+    if (this.editDescription && this.editDescription.length < 10) {
+      errors.description = 'Description must be at least 10 characters';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.editErrors.set(errors);
+      return;
+    }
+
+    this.editErrors.set({});
     this.taskService.updateTask(task.id, {
       title: this.editTitle,
-      description: this.editDescription,
+      description: this.editDescription || undefined,
       assignedTo: this.editAssignedTo,
       dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined
     } as any).subscribe(updated => {

@@ -27,6 +27,12 @@ export const findById = async (id: string, requestingUserId?: string, role?: str
     return assignedTo === requestingUserId ? task : null;
 }
 
+const isBoardMember = (board: any, userId: string): boolean => {
+    const ownerId = (board.owner as any)._id?.toString() ?? board.owner.toString();
+    return ownerId === userId ||
+        board.members.some((m: any) => (m._id?.toString() ?? m.toString()) === userId);
+};
+
 export const createTask = async (payload: CreateTaskDTO) => {
     const boardId = new Types.ObjectId(payload.board);
     const assignedToId = new Types.ObjectId(payload.assignedTo);
@@ -37,6 +43,12 @@ export const createTask = async (payload: CreateTaskDTO) => {
     const assignerRole = ((assigner.role as unknown) as IRole).role;
     if (assignerRole !== 'admin' && assignerRole !== 'manager') {
         throw new Error('Only managers or admins can assign tasks');
+    }
+
+    const board = await boardDAO.findById(payload.board);
+    if (!board) throw new Error('Board not found');
+    if (!isBoardMember(board, payload.assignedTo)) {
+        throw new Error('Assigned user is not a member of this board');
     }
 
     return await taskDAO.createTask({
@@ -57,6 +69,22 @@ export const updateTask = async (id: string, payload: UpdateTaskDTO) => {
     if (payload.board !== undefined) updateData.board = new Types.ObjectId(payload.board);
     if (payload.assignedTo !== undefined) updateData.assignedTo = new Types.ObjectId(payload.assignedTo);
     if (payload.assignedBy !== undefined) updateData.assignedBy = new Types.ObjectId(payload.assignedBy);
+
+    if (payload.assignedTo !== undefined || payload.board !== undefined) {
+        const existingTask = await taskDAO.findById(id);
+        if (!existingTask) throw new Error('Task not found');
+
+        const boardId = payload.board ??
+            ((existingTask.board as any)._id?.toString() ?? existingTask.board.toString());
+        const assignedToId = payload.assignedTo ??
+            ((existingTask.assignedTo as any)._id?.toString() ?? existingTask.assignedTo.toString());
+
+        const board = await boardDAO.findById(boardId);
+        if (!board) throw new Error('Board not found');
+        if (!isBoardMember(board, assignedToId)) {
+            throw new Error('Assigned user is not a member of this board');
+        }
+    }
 
     return await taskDAO.updateTask(id, updateData);
 };

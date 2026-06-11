@@ -35,7 +35,7 @@
       @if (createErrors().description) {
         <span class="field-error">{{ createErrors().description }}</span>
       }
-      <select [(ngModel)]="newBoard">
+      <select [(ngModel)]="newBoard" (ngModelChange)="onBoardChange()">
         <option value="">Select board *</option>
         @for (board of allBoards(); track board.id) {
           <option [value]="board.id">{{ board.title }}</option>
@@ -44,9 +44,9 @@
       @if (createErrors().board) {
         <span class="field-error">{{ createErrors().board }}</span>
       }
-      <select [(ngModel)]="newAssignedTo">
-        <option value="">Assign to *</option>
-        @for (user of allUsers(); track user.id) {
+      <select [(ngModel)]="newAssignedTo" [disabled]="!newBoard">
+        <option value="">{{ newBoard ? 'Assign to *' : 'Select a board first' }}</option>
+        @for (user of boardMembersForCreate; track user.id) {
           <option [value]="user.id">{{ user.firstname }} {{ user.lastname }}</option>
         }
       </select>
@@ -85,7 +85,7 @@
               <label class="form-label">Assigned To</label>
               <select [(ngModel)]="editAssignedTo">
                 <option value="">Assign to...</option>
-                @for (user of allUsers(); track user.id) {
+                @for (user of boardMembersForEdit; track user.id) {
                   <option [value]="user.id">{{ user.firstname }} {{ user.lastname }}</option>
                 }
               </select>

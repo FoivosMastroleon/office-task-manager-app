@@ -59,14 +59,23 @@
     @if (canManage) {
       @if (activeColumn() === 'todo') {
         <div class="inline-form board-add-form">
-          <input [(ngModel)]="newTitle" placeholder="Task title (min 10 chars)" />
+          <input [(ngModel)]="newTitle" placeholder="Task title *" />
+          @if (createErrors().title) {
+            <span class="field-error">{{ createErrors().title }}</span>
+          }
           <input [(ngModel)]="newDescription" placeholder="Description (optional)" />
+          @if (createErrors().description) {
+            <span class="field-error">{{ createErrors().description }}</span>
+          }
           <select [(ngModel)]="newAssignedTo">
-            <option value="">Assign to...</option>
+            <option value="">Assign to *</option>
             @for (member of board()!.members; track member.id) {
               <option [value]="member.id">{{ member.firstname }} {{ member.lastname }}</option>
             }
           </select>
+          @if (createErrors().assignedTo) {
+            <span class="field-error">{{ createErrors().assignedTo }}</span>
+          }
           <input type="date" [(ngModel)]="newDueDate" />
           <div class="form-actions">
             <button class="btn-add" (click)="submitTask('todo')">Add Task</button>
@@ -91,8 +100,14 @@
             <div class="task-card">
               @if (editingTask()?.id === task.id) {
                 <div class="inline-form">
-                  <input [(ngModel)]="editTitle" placeholder="Title" />
-                  <input [(ngModel)]="editDescription" placeholder="Description" />
+                  <input [(ngModel)]="editTitle" placeholder="Title *" />
+                  @if (editErrors().title) {
+                    <span class="field-error">{{ editErrors().title }}</span>
+                  }
+                  <input [(ngModel)]="editDescription" placeholder="Description (optional)" />
+                  @if (editErrors().description) {
+                    <span class="field-error">{{ editErrors().description }}</span>
+                  }
                   <select [(ngModel)]="editAssignedTo">
                     <option value="">Assign to...</option>
                     @for (member of board()!.members; track member.id) {
@@ -144,8 +159,14 @@
             <div class="task-card">
               @if (editingTask()?.id === task.id) {
                 <div class="inline-form">
-                  <input [(ngModel)]="editTitle" placeholder="Title" />
-                  <input [(ngModel)]="editDescription" placeholder="Description" />
+                  <input [(ngModel)]="editTitle" placeholder="Title *" />
+                  @if (editErrors().title) {
+                    <span class="field-error">{{ editErrors().title }}</span>
+                  }
+                  <input [(ngModel)]="editDescription" placeholder="Description (optional)" />
+                  @if (editErrors().description) {
+                    <span class="field-error">{{ editErrors().description }}</span>
+                  }
                   <select [(ngModel)]="editAssignedTo">
                     <option value="">Assign to...</option>
                     @for (member of board()!.members; track member.id) {
@@ -196,8 +217,14 @@
             <div class="task-card done-card">
               @if (editingTask()?.id === task.id) {
                 <div class="inline-form">
-                  <input [(ngModel)]="editTitle" placeholder="Title" />
-                  <input [(ngModel)]="editDescription" placeholder="Description" />
+                  <input [(ngModel)]="editTitle" placeholder="Title *" />
+                  @if (editErrors().title) {
+                    <span class="field-error">{{ editErrors().title }}</span>
+                  }
+                  <input [(ngModel)]="editDescription" placeholder="Description (optional)" />
+                  @if (editErrors().description) {
+                    <span class="field-error">{{ editErrors().description }}</span>
+                  }
                   <select [(ngModel)]="editAssignedTo">
                     <option value="">Assign to...</option>
                     @for (member of board()!.members; track member.id) {

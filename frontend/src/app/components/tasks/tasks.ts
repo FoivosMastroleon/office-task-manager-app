@@ -55,6 +55,23 @@ export class Tasks implements OnInit {
   get role() { return this.user?.role; }
   get canManage() { return this.role === 'admin' || this.role === 'manager'; }
 
+  get boardMembersForCreate() {
+    if (!this.newBoard) return [];
+    const board = this.allBoards().find(b => b.id === this.newBoard);
+    return board ? board.members : [];
+  }
+
+  get boardMembersForEdit() {
+    const task = this.editingTask();
+    if (!task?.board) return [];
+    const board = this.allBoards().find(b => b.id === task.board.id);
+    return board ? board.members : [];
+  }
+
+  onBoardChange() {
+    this.newAssignedTo = '';
+  }
+
   get filteredTasks() {
     if (this.showInactive()) {
       return this.tasks().filter(t => t.isActive === false);
@@ -131,7 +148,7 @@ export class Tasks implements OnInit {
     this.createErrors.set({});
     this.taskService.createTask({
       title: this.newTitle,
-      description: this.newDescription,
+      description: this.newDescription || undefined,
       board: this.newBoard,
       assignedTo: this.newAssignedTo,
       assignedBy: this.user!.userId,
@@ -180,7 +197,7 @@ export class Tasks implements OnInit {
     this.editErrors.set({});
     this.taskService.updateTask(task.id, {
       title: this.editTitle,
-      description: this.editDescription,
+      description: this.editDescription || undefined,
       assignedTo: this.editAssignedTo,
       dueDate: this.editDueDate ? new Date(this.editDueDate) : undefined,
       status: this.editStatus
